@@ -4,7 +4,7 @@
 
 **Why they exist:**
 1. **They show the format.** This is the JSON an agent must write. The agent only records facts and never says pass or fail.
-2. **They let the checker run without a browser.** `npm run check:observations -- 04-results/examples/observations` applies the standards to these files and prints the report. That makes the "agent observes, code decides" idea demonstrable today, with no Ollama, no Copilot and no network.
+2. **They let the checker run without a browser.** `npm run check:observations -- 03-results/examples/observations` applies the standards to these files and prints the report. That makes the "agent observes, code decides" idea demonstrable today, with no Ollama, no Copilot and no network.
 3. **They show the stability check.** Three runs with identical results give `FAIL (stable)`. Change one run by hand to see `UNSTABLE`.
 
 **What they contain:** they reproduce the failure found in the earlier manual run, where the last name is lost, so checkout never reaches the summary or confirmation. Cart contents, badge and prices are correct, so those checks pass.

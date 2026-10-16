@@ -27,7 +27,7 @@ The judge scores the **plan**, not the shop. Lint (`npm run lint:cases`) proves 
 - **Contradictions:** pass criteria that conflict with another case or the standards.
 - **Known-defect assumptions:** `problem_user` is meant to be faulty; flag cases that would be blocked by an earlier defect and so cannot isolate their own rule (give the earlier case).
 
-## Report format (`04-results/judge-report.md`)
+## Report format (`03-results/judge-report.md`)
 
 ```
 # Judge report — <date>

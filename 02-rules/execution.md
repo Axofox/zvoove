@@ -4,7 +4,7 @@
 
 ```
  test case (04)            agent (browser-use + Ollama, or a person)         code
- ─────────────  steps ──▶  records facts as JSON, no opinions  ──▶  08-scripts/check-observations.mjs
+ ─────────────  steps ──▶  records facts as JSON, no opinions  ──▶  04-scripts/check-observations.mjs
                            badge 2, prices, form values,              applies 02-rules      
                            totals, confirmation shown?                 → pass / FAIL (stable) / UNSTABLE
 ```
@@ -17,7 +17,7 @@
 
 ## What the agent records (one JSON file per run)
 
-`added`, `listingPrices`, `cartBadge`, `cart[]` (name, price, qty), `form.typed` and `form.retained`, `summary` (itemTotal, tax, total, or `null` if never reached), `confirmation` (shown, badgeAfter). See `04-results/examples/observations/`.
+`added`, `listingPrices`, `cartBadge`, `cart[]` (name, price, qty), `form.typed` and `form.retained`, `summary` (itemTotal, tax, total, or `null` if never reached), `confirmation` (shown, badgeAfter). See `03-results/examples/observations/`.
 
 **Instruction for the agent:** *Perform the steps. After each step write down exactly what is on screen. Do not say whether anything is correct, wrong or suspicious. If something is missing, record `null`.*
 
@@ -35,18 +35,18 @@
 | confirmation | Order Confirmation: a clear confirmation is shown |
 | cart-cleared | Order Confirmation: cart cleared after the order |
 
-New standard, new check: add one line to `08-scripts/check-observations.mjs`.
+New standard, new check: add one line to `04-scripts/check-observations.mjs`.
 
 ## Run it 3 times
 
 Put the 3 JSON files (or one file with a `"runs"` array) in one folder and run:
 
-    npm run check:observations -- 04-results/examples/observations
+    npm run check:observations -- 03-results/examples/observations
 
 Each check is reported as `pass`, `FAIL (stable)` (failed in every run) or `UNSTABLE` (differs between runs). Only stable results are findings; unstable ones mean the agent or the page is not repeatable.
 
 ## Honest status
 
-- `04-results/examples/observations/` is **hand-written**, marked `"synthetic": true`, modelled on the earlier manual run of `problem_user` (last name lost, so no summary or confirmation). They are not real agent output.
+- `03-results/examples/observations/` is **hand-written**, marked `"synthetic": true`, modelled on the earlier manual run of `problem_user` (last name lost, so no summary or confirmation). They are not real agent output.
 - The agent runner (browser-use with Ollama) is **not built yet**. The checker works without it, so a person can fill in the JSON by hand and get the same verdicts.
 - `problem_user` is a good first target: its bugs are fixed and repeatable, so a working setup should report the same stable failures every time.

@@ -20,7 +20,7 @@ The task scenario defines the baseline happy flow. Every other test case must tr
 
 ## Phase 1 — Generate test cases
 
-Write all test cases into a single file: `04-results/test-cases.md`
+Write all test cases into a single file: `03-results/test-cases.md`
 
 ### Format for each test case
 
