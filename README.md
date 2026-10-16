@@ -27,12 +27,22 @@ The project does not drive a browser. AI agents **plan and review** tests; peopl
 4. **Execute (human):** run the cases in a browser, record results and screenshots in `evidence/`.
 5. **Report:** `npm run report` builds `reports/index.html`.
 
+## How to run it
+
+Requirements: Node 18+ and VS Code with GitHub Copilot (agent mode). No `npm install` is needed; there are no dependencies.
+
+1. **Generate the plan.** In Copilot Chat choose the **QA Orchestrator** agent and say "generate the test cases". It calls the Test Case Generator, which writes `qa/test-cases.md`.
+2. **Check structure (free).** `npm run lint:cases`. Exit code 1 lists what is wrong, such as a missing field, a broken link or a result written into the plan.
+3. **Judge the plan.** Choose the **QA Judge** agent and say "judge the plan". It runs the lint, scores the cases against `qa/judge-rubric.md` and writes `qa/judge-report.md` with a verdict. If the verdict is REVISE, fix `qa/quality-standards.md`, `qa/test-types.md` or the generator prompt (not the plan by hand) and go back to step 1.
+4. **Execute by hand.** Run the cases on <https://www.saucedemo.com/> (`problem_user` / `secret_sauce`). Put results in `evidence/` as `TC-nnn.json` plus screenshots in `evidence/screenshots/`.
+5. **Report.** `npm run report`, then open `reports/index.html`.
+
+`evidence/` and `reports/` are gitignored, so they exist only on the machine that produced them. Past results are kept in `qa/history/`.
+
 ## Commands
 
     npm run lint:cases   # structure checks, exits 1 on problems
-    npm run report       # needs evidence/ (gitignored, kept locally)
-
-No dependencies are installed; Node 18+ is enough.
+    npm run report       # needs evidence/
 
 ## Human vs AI
 

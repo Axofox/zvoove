@@ -41,7 +41,7 @@ Write all test cases into a single file: `qa/test-cases.md`
 
 **Pass criteria:** [one sentence — what makes this test a pass]
 **Fail criteria:** [one sentence — what makes this test a fail]
-**Screenshot:** [screenshots/tc-[number]-outcome.png](../evidence/screenshots/tc-[number]-outcome.png)
+**Screenshot:** [../evidence/screenshots/tc-[number]-step-[n].png](../evidence/screenshots/tc-[number]-step-[n].png)
 ```
 
 ### Rules for generating test cases
@@ -55,7 +55,8 @@ Write all test cases into a single file: `qa/test-cases.md`
 - Keep steps short and action-oriented — one action per row, one expected outcome per row
 - Expected outcomes must be observable — something visible on screen, not an assumption about code
 - Add a stable `<a id="tc-[number]"></a>` anchor before every detailed case heading, and make each finding-table title link to its matching `#tc-[number]` anchor
-- Keep the plan within the approximately two-hour timebox in task.md; mark tests that cannot be run in time as OUT OF SCOPE with a reason
+- Keep the plan within the approximately two-hour timebox in task.md; mark tests that cannot be run in time as OUT OF SCOPE with a reason in a `**Timebox:**` line (never use OUT OF SCOPE for a feature the shop lacks; that is "unsupported" and is decided at execution)
+- Never write results, statuses or observed outcomes into the plan
 - When test-case generation is complete, stop and report the proposed case count, category coverage, and out-of-scope cases. Do not write automation or execute scenarios.
 
 ### Heuristics to apply per element type
