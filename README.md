@@ -13,7 +13,7 @@ Folders are numbered in the order the work happens. `.github/agents/` (the Copil
 | `01-task/` | The assignment and the happy-flow scenario |
 | `02-standards/` | What "working correctly" means, and the extra test categories |
 | `03-generator/` | Instructions and format for the test case generator |
-| `04-test-cases/` | The generated suite (20 cases, TC-001 to TC-020) |
+| `04-test-cases/` | A short suite of 5 cases, TC-001 to TC-005 |
 | `05-judge/` | The scoring rubric, and a mock of the judge report in `examples/` (invented scores, real format) |
 | `06-execution/` | How execution works (agent observes, code decides) and example observations |
 | `07-history/` | Archived runs |
@@ -82,7 +82,7 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 10. **Production feedback.** Turn each real incident into a permanent standard.
 11. **Cost and metrics.** Track tokens per run, how many cases the judge sends back, and how many findings humans accept.
 
-**Known gaps today:** the browser-use runner is not built; the examples in `06-execution/examples/` are hand-written; the Ollama judge has only been tested against a mock server; about eight cases are blocked by the same `problem_user` defect and cannot isolate their own rule.
+**Known gaps today:** the browser-use runner is not built; the examples in `06-execution/examples/` are hand-written; the Ollama judge has only been tested against a mock server; most cases need the checkout form, which `problem_user` breaks, so one defect can hide the rest.
 
 ## Why Playwright isn't in `package.json`
 

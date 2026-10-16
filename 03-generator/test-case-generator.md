@@ -46,6 +46,7 @@ Write all test cases into a single file: `04-test-cases/test-cases.md`
 
 ### Rules for generating test cases
 
+- A short suite is allowed when the requester gives a size (for example 5 cases): pick by risk, one per main kind of check, and say which categories are not covered
 - Cover the full happy flow first (TC-001 through however many steps it takes)
 - Then generate one test case per item in `02-standards/test-types.md`, in order: Cart CRUD, Negative, Security, State, UI, Data Integrity
 - For Cart CRUD: generate a separate test case for each operation — add, add-same-item-twice, update-quantity, remove, empty-cart
