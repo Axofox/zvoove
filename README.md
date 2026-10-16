@@ -22,13 +22,19 @@ Folders are numbered in the order the work happens. `.github/agents/` keeps its 
 | `08-scripts/lint-cases.mjs` | Free, deterministic structure checks on the plan |
 | `08-scripts/build-report.mjs` | Builds `reports/index.html` from saved results and screenshots |
 
-## Workflow
+## Workflow and where the human is in the loop
 
-1. **Generate:** the Orchestrator calls the Test Case Generator, which reads `01-task/task.md`, the standards and the test types and writes `04-test-cases/test-cases.md`.
-2. **Lint:** `npm run lint:cases` checks structure (fields, numbering, links, categories, no results in a plan). No AI, no cost.
-3. **Judge:** the QA Judge agent runs the lint, then scores each case against `05-judge/judge-rubric.md` and writes `05-judge/judge-report.md` with a verdict (ACCEPT / REVISE / REJECT). It never edits the plan, so the author of a case is never its reviewer.
-4. **Execute (human):** run the cases in a browser, record results and screenshots in `evidence/`.
-5. **Report:** `npm run report` builds `reports/index.html`.
+| # | Step | Who | Human checkpoint |
+|---|---|---|---|
+| 1 | **Generate** the plan from the task, standards and test types | AI (Test Case Generator) | Human owns the inputs: writes and edits `02-standards/`. The plan is never edited by hand |
+| 2 | **Lint** the plan (`npm run lint:cases`) | Code | None, it is free and deterministic |
+| 3 | **Judge** the plan against `05-judge/judge-rubric.md` | AI (QA Judge) | **Gate 1:** a human reads `05-judge/judge-report.md` and decides whether to accept the plan or change the standards and regenerate. The judge only advises |
+| 4 | **Execute** the cases on the shop | Person today; an AI agent later | Person today. With an agent: a human reviews what it recorded, because the agent only observes |
+| 5 | **Check** the recorded facts against the standards (`npm run check:observations`) | Code | None. Code, not AI, decides pass or fail |
+| 6 | **Triage** the failures | **Human** | **Gate 2:** a human confirms each finding is a real bug, sets severity and priority, and files it. `UNSTABLE` results are investigated, not reported |
+| 7 | **Report** (`npm run report`) | Code | A human reads it and signs off |
+
+Rule of thumb: AI proposes and advises, code decides repeatable facts, humans own the standards, the severity and the sign-off.
 
 ## How to run it
 
@@ -36,8 +42,8 @@ Requirements: Node 18+ and VS Code with GitHub Copilot (agent mode). No `npm ins
 
 1. **Generate the plan.** In Copilot Chat choose the **QA Orchestrator** agent and say "generate the test cases". It calls the Test Case Generator, which writes `04-test-cases/test-cases.md`.
 2. **Check structure (free).** `npm run lint:cases`. Exit code 1 lists what is wrong, such as a missing field, a broken link or a result written into the plan.
-3. **Judge the plan.** Choose the **QA Judge** agent and say "judge the plan". It runs the lint, scores the cases against `05-judge/judge-rubric.md` and writes `05-judge/judge-report.md` with a verdict. If the verdict is REVISE, fix `02-standards/quality-standards.md`, `02-standards/test-types.md` or the generator prompt (not the plan by hand) and go back to step 1.
-4. **Execute by hand.** Run the cases on <https://www.saucedemo.com/> (`problem_user` / `secret_sauce`). Put results in `evidence/` as `TC-nnn.json` plus screenshots in `evidence/screenshots/`.
+3. **Judge the plan (human reads the report).** Choose the **QA Judge** agent and say "judge the plan". It runs the lint, scores the cases against `05-judge/judge-rubric.md` and writes `05-judge/judge-report.md` with a verdict. If the verdict is REVISE, fix `02-standards/quality-standards.md`, `02-standards/test-types.md` or the generator prompt (not the plan by hand) and go back to step 1.
+4. **Execute by hand (human).** Run the cases on <https://www.saucedemo.com/> (`problem_user` / `secret_sauce`). Put results in `evidence/` as `TC-nnn.json` plus screenshots in `evidence/screenshots/`.
 5. **Report.** `npm run report`, then open `reports/index.html`.
 
 `evidence/` and `reports/` are gitignored, so they exist only on the machine that produced them. Past results are kept in `07-history/`.
@@ -66,7 +72,34 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 
 ## Human vs AI
 
-AI: draft cases, review them against a rubric. Human: execute, judge severity, file bugs, approve changes to expectations.
+| | AI | Human |
+|---|---|---|
+| Plan | Drafts cases from the standards | Writes the standards and the test types; accepts or rejects the judge's verdict |
+| Review | Scores each case against the rubric | Decides what to change when the judge says REVISE; checks the judge is stable (`--runs 3`) |
+| Execution | Observes and records facts (later, with an agent) | Runs the cases today; spot-checks what the agent recorded |
+| Verdict | Never decides pass or fail | Confirms findings, assigns severity and priority, files bugs, approves changes to expectations |
+
+What stays human on purpose: what "correct" means (the standards), what a failure is worth (severity), and the decision to ship or fix.
+
+## What to improve next
+
+**From the author (my ideas):**
+1. **Customer reporting extension.** A browser extension that captures the URL, a screenshot, console logs and recent clicks with one button, so customers report problems to support more easily. An AI turns it into a structured ticket and links it to the matching test case, or proposes a new case. Support tickets then feed the test suite.
+2. **Improve the standards and the judge by repetition.** Re-run until the same results come back, not different ones. When the same issues are found every time, the standards and the rubric are tight. Where results differ, the wording is ambiguous.
+3. **Apply the standards from code.** Experiment with running the quality standards directly as code. The first step exists: `08-scripts/check-observations.mjs`.
+
+**Added by Claude (suggestions):**
+4. **Judge stability tests.** Run the judge N times (`--runs 3`) and track agreement. Keep a few known-bad plans (a case with no expected outcome, a duplicate) that it must always reject. Pin the model and temperature, and keep the results to show the trend.
+5. **Browser-use agent.** Run the cases with browser-use and a local Ollama model, in text-only mode. The agent only records observations; code decides pass or fail. Start with the happy flow (TC-001) only.
+6. **Requirements and diffs to cases.** Feed a ticket, a pull request diff or an incident to the generator and get only the new or affected cases, ranked by risk.
+7. **Traceability matrix.** Rule to case to result, plus a list of rules that no case covers.
+8. **Bug triage.** Group duplicate findings by root cause and draft severity and reproduction steps for a human to approve.
+9. **Flaky-result detection.** Run each case several times and flag results that change between runs.
+10. **Exploratory testing.** An agent that looks for suspicious behaviour outside the written cases, such as the wrong product opening from a click.
+11. **Production feedback.** Turn each real incident into a permanent standard.
+12. **Cost and metrics.** Track tokens per run, how many cases the judge sends back, and how many findings humans accept.
+
+**Known gaps today:** the browser-use runner is not built; the examples in `06-execution/examples/` are hand-written; the Ollama judge has only been tested against a mock server; about eight cases are blocked by the same `problem_user` defect and cannot isolate their own rule.
 
 ## Why Playwright isn't in `package.json`
 
