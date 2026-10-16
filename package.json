@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "report": "node 08-scripts/build-report.mjs",
-    "lint:cases": "node 08-scripts/lint-cases.mjs",
-    "judge:ollama": "node 08-scripts/judge-ollama.mjs",
-    "check:observations": "node 08-scripts/check-observations.mjs",
-    "plan:check": "node 08-scripts/lint-cases.mjs && node 08-scripts/judge-ollama.mjs"
+    "report": "node 04-scripts/build-report.mjs",
+    "lint:cases": "node 04-scripts/lint-cases.mjs",
+    "judge:ollama": "node 04-scripts/judge-ollama.mjs",
+    "check:observations": "node 04-scripts/check-observations.mjs",
+    "plan:check": "node 04-scripts/lint-cases.mjs && node 04-scripts/judge-ollama.mjs"
   }
 }

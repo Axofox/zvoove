@@ -1,5 +1,5 @@
 // Local AI judge for the test plan. Text only, no dependencies, needs Ollama running.
-// Usage: node 08-scripts/judge-ollama.mjs [--model qwen2.5:7b] [--runs 3]
+// Usage: node 04-scripts/judge-ollama.mjs [--model qwen2.5:7b] [--runs 3]
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
 
@@ -13,7 +13,7 @@ const host = process.env.OLLAMA_HOST ?? 'http://localhost:11434';
 const read = (p) => fs.readFileSync(p, 'utf8');
 
 const standards = read('02-rules/quality-standards.md') + '\n' + read('02-rules/test-types.md');
-const plan = read('04-results/test-cases.md');
+const plan = read('03-results/test-cases.md');
 const cases = plan.split(/^(?=<a id="tc-\d+"><\/a>)/m).slice(1);
 // The six criteria come from the rubric table, so the rubric stays the single source.
 const rubric = read('02-rules/judge-rubric.md');
@@ -56,7 +56,7 @@ async function judge(testCase) {
 let lint = '';
 let lintOk = true;
 try {
-  lint = execFileSync('node', ['08-scripts/lint-cases.mjs'], { encoding: 'utf8' });
+  lint = execFileSync('node', ['04-scripts/lint-cases.mjs'], { encoding: 'utf8' });
 } catch (e) {
   lint = e.stdout;
   lintOk = false;
@@ -107,6 +107,6 @@ ${weak.length ? weak.map((l) => `- ${l.name}: ${l.avg.toFixed(1)}/12${l.traceabl
 ## Judge stability
 ${runs > 1 ? (unstable.length ? `Unstable cases (the rubric or the case is ambiguous): ${unstable.map((l) => l.name).join('; ')}` : 'All cases scored consistently across runs.') : 'Run with --runs 3 to measure stability.'}
 `;
-fs.writeFileSync('04-results/judge-report.md', report);
-console.log(`\n${verdict}: mean ${mean.toFixed(1)}/12, ${weak.length} to revisit, ${unstable.length} unstable. Written to 04-results/judge-report.md`);
+fs.writeFileSync('03-results/judge-report.md', report);
+console.log(`\n${verdict}: mean ${mean.toFixed(1)}/12, ${weak.length} to revisit, ${unstable.length} unstable. Written to 03-results/judge-report.md`);
 process.exit(verdict === 'ACCEPT' ? 0 : 1);
