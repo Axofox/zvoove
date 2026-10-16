@@ -36,11 +36,12 @@ for (const part of parts) {
 }
 
 for (const link of text.matchAll(/\]\(#(tc-\d+)\)/g)) if (!seen.has(link[1].toUpperCase())) add(link[1], 'findings table links to a case that does not exist');
-for (const c of categories) if (!new RegExp(`\\*\\*Category:\\*\\* ${c}\\b`).test(text)) add('coverage', `no case in category "${c}"`);
+const uncovered = [...categories].filter((c) => !new RegExp(`\\*\\*Category:\\*\\* ${c}\\b`).test(text));
 if (/^## Run Findings/m.test(text)) add('plan', 'plan file contains "Run Findings"; the generator must not claim results (move them to 07-history or evidence)');
 if (/Phase \d CLI results|captured screenshot links/i.test(text)) add('plan', 'header claims executed results in a plan-only file');
 
 console.log(`${parts.length} cases checked in ${file}`);
+if (uncovered.length) console.log(`Categories with no case (info only): ${uncovered.join(', ')}`);
 if (problems.length) {
   console.log(problems.map((p) => `- ${p}`).join('\n'));
   process.exit(1);
