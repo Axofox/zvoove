@@ -39,7 +39,7 @@ New standard, new check: add one line to `08-scripts/check-observations.mjs`.
 
 ## Run it 3 times
 
-Put the 3 JSON files in one folder and run:
+Put the 3 JSON files (or one file with a `"runs"` array) in one folder and run:
 
     npm run check:observations -- 06-execution/examples
 

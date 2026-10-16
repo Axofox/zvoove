@@ -16,37 +16,28 @@ Folders are numbered in the order the work happens. `.github/agents/` keeps its 
 | `03-generator/test-case-generator.md` | Instructions and format for the generator |
 | `04-test-cases/test-cases.md` | The generated suite (20 cases, TC-001 to TC-020) |
 | `05-judge/judge-rubric.md` | How the judge scores the plan |
-| `06-execution/` | How execution works (agent observes, code decides), example observations, a manual session plan |
+| `06-execution/` | How execution works (agent observes, code decides), example observations |
 | `07-history/` | Archived runs |
-| `.github/agents/` | Copilot agents: **QA Orchestrator**, **Test Case Generator**, **QA Judge** |
+| `.github/agents/` | Copilot agents: **Test Case Generator**, **QA Judge** |
 | `08-scripts/lint-cases.mjs` | Free, deterministic structure checks on the plan |
 | `08-scripts/build-report.mjs` | Builds `reports/index.html` from saved results and screenshots |
 
 ## Workflow and where the human is in the loop
 
-| # | Step | Who | Human checkpoint |
-|---|---|---|---|
-| 1 | **Generate** the plan from the task, standards and test types | AI (Test Case Generator) | Human owns the inputs: writes and edits `02-standards/`. The plan is never edited by hand |
-| 2 | **Lint** the plan (`npm run lint:cases`) | Code | None, it is free and deterministic |
-| 3 | **Judge** the plan against `05-judge/judge-rubric.md` | AI (QA Judge) | **Gate 1:** a human reads `05-judge/judge-report.md` and decides whether to accept the plan or change the standards and regenerate. The judge only advises |
-| 4 | **Execute** the cases on the shop | Person today; an AI agent later | Person today. With an agent: a human reviews what it recorded, because the agent only observes |
-| 5 | **Check** the recorded facts against the standards (`npm run check:observations`) | Code | None. Code, not AI, decides pass or fail |
-| 6 | **Triage** the failures | **Human** | **Gate 2:** a human confirms each finding is a real bug, sets severity and priority, and files it. `UNSTABLE` results are investigated, not reported |
-| 7 | **Report** (`npm run report`) | Code | A human reads it and signs off |
+Requirements: Node 18+. The Copilot steps need VS Code with GitHub Copilot (agent mode); the Ollama route below needs neither. No `npm install`.
 
-Rule of thumb: AI proposes and advises, code decides repeatable facts, humans own the standards, the severity and the sign-off.
+| # | Step | Who | How | Human checkpoint |
+|---|---|---|---|---|
+| 1 | **Generate** the plan | AI | Copilot Chat, agent **Test Case Generator**: "generate the test cases". Writes `04-test-cases/test-cases.md` | Human owns the inputs in `02-standards/`. The plan is never edited by hand |
+| 2 | **Judge** the plan | Code, then AI | Agent **QA Judge**: "judge the plan" (or `npm run judge:ollama`). It runs `npm run lint:cases` first, then scores each case against `05-judge/judge-rubric.md` into `05-judge/judge-report.md` | **Gate 1:** a human reads the report and decides: accept, or change the standards and go back to step 1. The judge only advises |
+| 3 | **Execute** the cases | Person today; an AI agent later | Run them on <https://www.saucedemo.com/> (`problem_user` / `secret_sauce`) and record facts as JSON | A person executes. With an agent, a human reviews what it recorded |
+| 4 | **Check** the facts against the standards | Code | `npm run check:observations -- <folder>` | None. Code, not AI, decides pass or fail |
+| 5 | **Triage** the failures | **Human** | Read the check report | **Gate 2:** confirm each finding is a real bug, set severity and priority, file it. `UNSTABLE` results are investigated, not reported |
+| 6 | **Report** | Code | `npm run report`, open `reports/index.html` | A human reads it and signs off |
 
-## How to run it
+AI proposes and advises, code decides repeatable facts, humans own the standards, the severity and the sign-off.
 
-Requirements: Node 18+ and VS Code with GitHub Copilot (agent mode). No `npm install` is needed; there are no dependencies.
-
-1. **Generate the plan.** In Copilot Chat choose the **QA Orchestrator** agent and say "generate the test cases". It calls the Test Case Generator, which writes `04-test-cases/test-cases.md`.
-2. **Check structure (free).** `npm run lint:cases`. Exit code 1 lists what is wrong, such as a missing field, a broken link or a result written into the plan.
-3. **Judge the plan (human reads the report).** Choose the **QA Judge** agent and say "judge the plan". It runs the lint, scores the cases against `05-judge/judge-rubric.md` and writes `05-judge/judge-report.md` with a verdict. If the verdict is REVISE, fix `02-standards/quality-standards.md`, `02-standards/test-types.md` or the generator prompt (not the plan by hand) and go back to step 1.
-4. **Execute by hand (human).** Run the cases on <https://www.saucedemo.com/> (`problem_user` / `secret_sauce`). Put results in `evidence/` as `TC-nnn.json` plus screenshots in `evidence/screenshots/`.
-5. **Report.** `npm run report`, then open `reports/index.html`.
-
-`evidence/` and `reports/` are gitignored, so they exist only on the machine that produced them. Past results are kept in `07-history/`.
+`evidence/` and `reports/` are gitignored, so they exist only on the machine that produced them. Past results are in `07-history/`.
 
 ## Run the judge locally with Ollama (no GitHub, no Copilot, no tokens)
 
@@ -69,17 +60,6 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 
     npm run lint:cases   # structure checks, exits 1 on problems
     npm run report       # needs evidence/
-
-## Human vs AI
-
-| | AI | Human |
-|---|---|---|
-| Plan | Drafts cases from the standards | Writes the standards and the test types; accepts or rejects the judge's verdict |
-| Review | Scores each case against the rubric | Decides what to change when the judge says REVISE; checks the judge is stable (`--runs 3`) |
-| Execution | Observes and records facts (later, with an agent) | Runs the cases today; spot-checks what the agent recorded |
-| Verdict | Never decides pass or fail | Confirms findings, assigns severity and priority, files bugs, approves changes to expectations |
-
-What stays human on purpose: what "correct" means (the standards), what a failure is worth (severity), and the decision to ship or fix.
 
 ## What to improve next
 

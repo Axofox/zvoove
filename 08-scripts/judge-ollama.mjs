@@ -15,18 +15,18 @@ const read = (p) => fs.readFileSync(p, 'utf8');
 const standards = read('02-standards/quality-standards.md') + '\n' + read('02-standards/test-types.md');
 const plan = read('04-test-cases/test-cases.md');
 const cases = plan.split(/^(?=<a id="tc-\d+"><\/a>)/m).slice(1);
-const criteria = ['observable', 'atomic', 'discriminating', 'selfContained', 'isolating', 'minimal'];
+// The six criteria come from the rubric table, so the rubric stays the single source.
+const rubric = read('05-judge/judge-rubric.md');
+const rows = [...rubric.matchAll(/^\| (Observable|Atomic|Discriminating|Self-contained|Isolating|Minimal) \| (.+) \|$/gm)];
+const criteria = rows.map((r) => r[1].replace(/-(\w)/g, (_, c) => c.toUpperCase()).replace(/^./, (c) => c.toLowerCase()));
+const criteriaText = rows.map((r) => `- ${criteria[rows.indexOf(r)]}: ${r[2]}`).join('\n');
+if (rows.length !== 6) throw new Error('Could not find the six criteria in 05-judge/judge-rubric.md');
 
 const prompt = (testCase) => `You review ONE manual test case for an online shop checkout.
 Score each criterion 0 (absent), 1 (weak) or 2 (solid):
-- observable: every expected outcome is visible on screen
-- atomic: one action and one expectation per row
-- discriminating: wrong behaviour would really fail it
-- selfContained: preconditions allow starting from nothing
-- isolating: varies one thing, so a failure points to one cause
-- minimal: no step that does not serve the pass/fail criteria
+${criteriaText}
 Also say whether the case traces to a rule in the STANDARDS below (traceable: true/false).
-Reply with JSON only: {"observable":n,"atomic":n,"discriminating":n,"selfContained":n,"isolating":n,"minimal":n,"traceable":bool,"quote":"exact words from the case that justify your lowest score","topFix":"one sentence"}
+Reply with JSON only: {${criteria.map((c) => `"${c}":n`).join(',')},"traceable":bool,"quote":"exact words from the case that justify your lowest score","topFix":"one sentence"}
 
 STANDARDS:
 ${standards}
