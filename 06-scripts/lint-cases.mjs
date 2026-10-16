@@ -1,7 +1,7 @@
-// Deterministic pre-checks for 04-test-cases/test-cases.md. Free to run; the AI judge only reviews what these cannot decide.
+// Deterministic pre-checks for 03-plan/test-cases.md. Free to run; the AI judge only reviews what these cannot decide.
 import fs from 'node:fs';
 
-const file = process.argv[2] ?? '04-test-cases/test-cases.md';
+const file = process.argv[2] ?? '03-plan/test-cases.md';
 const text = fs.readFileSync(file, 'utf8');
 const problems = [];
 const add = (id, msg) => problems.push(`${id}: ${msg}`);
@@ -37,7 +37,7 @@ for (const part of parts) {
 
 for (const link of text.matchAll(/\]\(#(tc-\d+)\)/g)) if (!seen.has(link[1].toUpperCase())) add(link[1], 'findings table links to a case that does not exist');
 const uncovered = [...categories].filter((c) => !new RegExp(`\\*\\*Category:\\*\\* ${c}\\b`).test(text));
-if (/^## Run Findings/m.test(text)) add('plan', 'plan file contains "Run Findings"; the generator must not claim results (move them to 07-history or evidence)');
+if (/^## Run Findings/m.test(text)) add('plan', 'plan file contains "Run Findings"; the generator must not claim results (move them to 05-history or evidence)');
 if (/Phase \d CLI results|captured screenshot links/i.test(text)) add('plan', 'header claims executed results in a plan-only file');
 
 console.log(`${parts.length} cases checked in ${file}`);

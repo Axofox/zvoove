@@ -1,5 +1,5 @@
 // Applies the quality standards to what an agent OBSERVED. The agent never decides pass or fail.
-// Usage: node 08-scripts/check-observations.mjs <dir with TC-001-run*.json files>
+// Usage: node 06-scripts/check-observations.mjs <dir with TC-001-run*.json files>
 import fs from 'node:fs';
 import path from 'node:path';
 

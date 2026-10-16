@@ -4,8 +4,8 @@
 
 ```
  test case (04)            agent (browser-use + Ollama, or a person)         code
- ─────────────  steps ──▶  records facts as JSON, no opinions  ──▶  08-scripts/check-observations.mjs
-                           badge 2, prices, form values,              applies 02-standards rules
+ ─────────────  steps ──▶  records facts as JSON, no opinions  ──▶  06-scripts/check-observations.mjs
+                           badge 2, prices, form values,              applies 02-rules      
                            totals, confirmation shown?                 → pass / FAIL (stable) / UNSTABLE
 ```
 
@@ -35,13 +35,13 @@
 | confirmation | Order Confirmation: a clear confirmation is shown |
 | cart-cleared | Order Confirmation: cart cleared after the order |
 
-New standard, new check: add one line to `08-scripts/check-observations.mjs`.
+New standard, new check: add one line to `06-scripts/check-observations.mjs`.
 
 ## Run it 3 times
 
 Put the 3 JSON files (or one file with a `"runs"` array) in one folder and run:
 
-    npm run check:observations -- 06-execution/examples
+    npm run check:observations -- 04-execution/examples
 
 Each check is reported as `pass`, `FAIL (stable)` (failed in every run) or `UNSTABLE` (differs between runs). Only stable results are findings; unstable ones mean the agent or the page is not repeatable.
 

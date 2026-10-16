@@ -1,12 +1,12 @@
 # Judge report (MOCK EXAMPLE)
 
-> **This file is a hand-written example, not real model output.** It shows the format that `npm run judge:ollama` or the QA Judge agent produces, using the real case titles and the real lint result. The scores are invented for illustration. Run the judge to get real ones; it writes `05-judge/judge-report.md`, not this file.
+> **This file is a hand-written example, not real model output.** It shows the format that `npm run judge:ollama` or the QA Judge agent produces, using the real case titles and the real lint result. The scores are invented for illustration. Run the judge to get real ones; it writes `03-plan/judge-report.md`, not this file.
 
 Verdict: **REVISE**  ·  model: `example`  ·  runs: 3  ·  mean score: 10.6/12
 
 ## Deterministic checks
 ```
-5 cases checked in 04-test-cases/test-cases.md
+5 cases checked in 03-plan/test-cases.md
 Categories with no case (info only): State, UI
 no deterministic problems
 ```

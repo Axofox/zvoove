@@ -8,7 +8,7 @@
 ## TC-001 — Complete checkout for the required products
 
 **Category:** Happy Flow
-**Based on:** `01-task/task.md`, Scenario steps 1–7; `02-standards/quality-standards.md`, Cart, Checkout Form, Order Summary and Order Confirmation
+**Based on:** `01-task/task.md`, Scenario steps 1–7; `02-rules/quality-standards.md`, Cart, Checkout Form, Order Summary and Order Confirmation
 **Preconditions:** Fresh browser session, not logged in, cart empty.
 
 ### Steps
@@ -31,7 +31,7 @@
 ## TC-002 — Add the same item twice
 
 **Category:** Cart CRUD
-**Based on:** `02-standards/test-types.md`, Cart CRUD — Add same item twice; `02-standards/quality-standards.md`, Cart
+**Based on:** `02-rules/test-types.md`, Cart CRUD — Add same item twice; `02-rules/quality-standards.md`, Cart
 **Preconditions:** Logged in, cart empty.
 
 ### Steps
@@ -50,7 +50,7 @@
 ## TC-003 — Block checkout with a required field missing
 
 **Category:** Negative
-**Based on:** `02-standards/test-types.md`, Negative — Skip required fields; `02-standards/quality-standards.md`, Checkout Form
+**Based on:** `02-rules/test-types.md`, Negative — Skip required fields; `02-rules/quality-standards.md`, Checkout Form
 **Preconditions:** Logged in, one item in the cart, on the checkout information page.
 
 ### Steps
@@ -69,7 +69,7 @@
 ## TC-004 — Reject script injection in checkout fields
 
 **Category:** Security
-**Based on:** `02-standards/test-types.md`, Security — XSS, script injection; `02-standards/quality-standards.md`, Checkout Form
+**Based on:** `02-rules/test-types.md`, Security — XSS, script injection; `02-rules/quality-standards.md`, Checkout Form
 **Preconditions:** Logged in, one item in the cart, on the checkout information page.
 
 ### Steps
@@ -88,7 +88,7 @@
 ## TC-005 — Prices stay the same from list to summary
 
 **Category:** Data Integrity
-**Based on:** `02-standards/test-types.md`, Data Integrity — Price consistency; `02-standards/quality-standards.md`, Product Page and Order Summary
+**Based on:** `02-rules/test-types.md`, Data Integrity — Price consistency; `02-rules/quality-standards.md`, Product Page and Order Summary
 **Preconditions:** Logged in, cart empty.
 
 ### Steps
