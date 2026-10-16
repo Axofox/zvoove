@@ -2,42 +2,37 @@
 
 An AI-assisted QA exercise for the checkout of <https://www.saucedemo.com/> (user `problem_user`, which is deliberately faulty). The scenario, from `01-task/task.md`: log in, add the Backpack and the Bike Light, open the cart, check out with valid details, and complete the order.
 
-The project does not drive a browser. AI agents **plan and review** tests; people execute them and judge the findings.
+AI plans and reviews the tests, code decides pass or fail, and a person is pulled in only for the standards and for real failures. The project does not drive a browser yet: execution is manual today, and a Playwright observer script is the next step.
 
 ## What is in it
 
-Folders are numbered in the order the work happens. `.github/agents/` keeps its name because Copilot requires it; `evidence/` and `reports/` are created locally and gitignored.
+Folders are numbered in the order the work happens. `.github/agents/` (the Copilot agents **Test Case Generator** and **QA Judge**) keeps its name because Copilot requires it.
 
-| Path | Purpose |
+| Folder | What's in it |
 |---|---|
-| `01-task/task.md` | The assignment and the happy-flow scenario |
-| `02-standards/quality-standards.md` | What "working correctly" means for product page, cart, form, summary and confirmation |
-| `02-standards/test-types.md` | Extra categories: cart CRUD, negative, security, state, UI, data integrity |
-| `03-generator/test-case-generator.md` | Instructions and format for the generator |
-| `04-test-cases/test-cases.md` | The generated suite (20 cases, TC-001 to TC-020) |
-| `05-judge/` | The rubric, and `examples/judge-report-mock.md`, a mock of the judge report (invented scores, real format) |
-| `06-execution/` | How execution works (agent observes, code decides), example observations |
+| `01-task/` | The assignment and the happy-flow scenario |
+| `02-standards/` | What "working correctly" means, and the extra test categories |
+| `03-generator/` | Instructions and format for the test case generator |
+| `04-test-cases/` | The generated suite (20 cases, TC-001 to TC-020) |
+| `05-judge/` | The scoring rubric, and a mock of the judge report in `examples/` (invented scores, real format) |
+| `06-execution/` | How execution works (agent observes, code decides) and example observations |
 | `07-history/` | Archived runs |
-| `.github/agents/` | Copilot agents: **Test Case Generator**, **QA Judge** |
-| `08-scripts/lint-cases.mjs` | Free, deterministic structure checks on the plan |
-| `08-scripts/build-report.mjs` | Builds `reports/index.html` from saved results and screenshots |
+| `08-scripts/` | Lint, judge (Ollama), observation checker and report scripts |
 
-## Workflow and where the human is in the loop
+## Workflow: two human jobs, two automatic stages
 
 Requirements: Node 18+. The Copilot steps need VS Code with GitHub Copilot (agent mode); the Ollama route below needs neither. No `npm install`.
 
-| # | Step | Who | How | Human checkpoint |
-|---|---|---|---|---|
-| 1 | **Generate** the plan | AI | Copilot Chat, agent **Test Case Generator**: "generate the test cases". Writes `04-test-cases/test-cases.md` | Human owns the inputs in `02-standards/`. The plan is never edited by hand |
-| 2 | **Judge** the plan | Code, then AI | Agent **QA Judge**: "judge the plan" (or `npm run judge:ollama`). It runs `npm run lint:cases` first, then scores each case against `05-judge/judge-rubric.md` into `05-judge/judge-report.md` | **Gate 1:** a human reads the report and decides: accept, or change the standards and go back to step 1. The judge only advises |
-| 3 | **Execute** the cases | Person today; an AI agent later | Run them on <https://www.saucedemo.com/> (`problem_user` / `secret_sauce`) and record facts as JSON | A person executes. With an agent, a human reviews what it recorded |
-| 4 | **Check** the facts against the standards | Code | `npm run check:observations -- <folder>` | None. Code, not AI, decides pass or fail |
-| 5 | **Triage** the failures | **Human** | Read the check report | **Gate 2:** confirm each finding is a real bug, set severity and priority, file it. `UNSTABLE` results are investigated, not reported |
-| 6 | **Report** | Code | `npm run report`, open `reports/index.html` | A human reads it and signs off |
+| # | Stage | Who | How |
+|---|---|---|---|
+| 1 | **Standards** | **Human** | Write and maintain `02-standards/`. This is the one place a person defines what "correct" means |
+| 2 | **Make the plan** | Automatic | Agent **Test Case Generator** writes `04-test-cases/test-cases.md`, then `npm run plan:check` runs the lint and the judge (`05-judge/judge-report.md`). A person looks only if the verdict is REVISE |
+| 3 | **Run and check** | Person today, automatic later | Execute the cases and record facts as JSON. `npm run check:observations -- <folder>` applies the standards, three runs at a time. A person looks only at failures and `UNSTABLE` results |
+| 4 | **Triage** | **Human** | Confirm each failure is a real bug, set severity and priority, file it. `npm run report` builds the evidence page if you want one |
 
-AI proposes and advises, code decides repeatable facts, humans own the standards, the severity and the sign-off.
+**The human is pulled in by exceptions, not by every step.** If the judge says ACCEPT and every check is stable and passing, nothing needs a person. The two human jobs are the ones that need judgement: what "correct" means, and what a failure is worth.
 
-`evidence/` and `reports/` are gitignored, so they exist only on the machine that produced them. The report shows the images from `evidence/screenshots/` without copying them, so `reports/index.html` only works next to `evidence/`. Past results are in `07-history/`.
+**Honest status:** step 3 is still manual, because the observer script is not built (see the improvement ideas). Steps 1, 2 and 4 work as described.
 
 ## Run the judge locally with Ollama (no GitHub, no Copilot, no tokens)
 
@@ -58,8 +53,11 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 
 ## Commands
 
-    npm run lint:cases   # structure checks, exits 1 on problems
-    npm run report       # needs evidence/
+    npm run plan:check       # lint, then the Ollama judge; exits 1 on problems or REVISE
+    npm run lint:cases       # structure checks only, exits 1 on problems
+    npm run judge:ollama     # the judge only
+    npm run check:observations -- <folder>   # standards vs recorded facts; exits 1 on failures
+    npm run report           # needs evidence/
 
 ## What to improve next
 
@@ -76,7 +74,7 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 
 **Added by Claude (suggestions):**
 
-5. **Browser-use agent.** Run the cases with browser-use and a local Ollama model, in text-only mode. The agent only records observations; code decides pass or fail. Start with the happy flow (TC-001) only.
+5. **Automate execution.** First a plain Playwright observer script (no AI): it runs TC-001 three times and writes the facts as JSON, so stage 3 needs no person. Later a browser-use agent with a local Ollama model in text-only mode, which only records observations while code decides pass or fail.
 6. **Requirements and diffs to cases.** Feed a ticket, a pull request diff or an incident to the generator and get only the new or affected cases, ranked by risk.
 7. **Traceability matrix.** Rule to case to result, plus a list of rules that no case covers. It needs a stable ID on every rule in `02-standards/` and those IDs in each case's "Based on" line, then a script joins rules, cases and check results. It catches gaps (rules with no case), orphans (cases citing a rule that does not exist) and rules whose cases are all blocked by the same earlier defect.
 8. **Bug triage.** Group duplicate findings by root cause and draft severity and reproduction steps for a human to approve.
