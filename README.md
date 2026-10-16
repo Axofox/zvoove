@@ -6,17 +6,14 @@ AI plans and reviews the tests, code decides pass or fail, and a person is pulle
 
 ## What is in it
 
-Folders are numbered in the order the work happens. `.github/agents/` (the Copilot agents **Test Case Generator** and **QA Judge**) keeps its name because Copilot requires it.
+Folders are numbered in the order you meet them. Everything a person owns is in `02-rules/` and `03-agents/`; everything produced is in `04-results/`. `.github/agents/` holds the two Copilot agent files (**Test Case Generator**, **QA Judge**) and cannot be renamed or moved, because Copilot only looks there.
 
 | Folder | What's in it |
 |---|---|
 | `01-task/` | The assignment and the happy-flow scenario |
-| `02-standards/` | What "working correctly" means, and the extra test categories |
-| `03-generator/` | Instructions and format for the test case generator |
-| `04-test-cases/` | A short suite of 5 cases, TC-001 to TC-005 |
-| `05-judge/` | The scoring rubric, and a mock of the judge report in `examples/` (invented scores, real format) |
-| `06-execution/` | How execution works (agent observes, code decides) and example observations |
-| `07-history/` | Archived runs |
+| `02-rules/` | The quality standards, the test types, the judge rubric, and `execution.md` (the agent observes, code decides) |
+| `03-agents/` | The generator's instructions and output format (`test-case-generator.md`) |
+| `04-results/` | The 5 test cases, the judge report (`judge-report.md`, created by a run), `examples/` (a mock judge report and sample observations, both invented) and `history/` (archived runs, old paths inside) |
 | `08-scripts/` | Lint, judge (Ollama), observation checker and report scripts |
 
 ## Workflow: two human jobs, two automatic stages
@@ -25,8 +22,8 @@ Requirements: Node 18+. The Copilot steps need VS Code with GitHub Copilot (agen
 
 | # | Stage | Who | How |
 |---|---|---|---|
-| 1 | **Standards** | **Human** | Write and maintain `02-standards/`. This is the one place a person defines what "correct" means |
-| 2 | **Make the plan** | Automatic | Agent **Test Case Generator** writes `04-test-cases/test-cases.md`, then `npm run plan:check` runs the lint and the judge (`05-judge/judge-report.md`). A person looks only if the verdict is REVISE |
+| 1 | **Standards** | **Human** | Write and maintain `02-rules/`. This is the one place a person defines what "correct" means |
+| 2 | **Make the plan** | Automatic | Agent **Test Case Generator** writes `04-results/test-cases.md`, then `npm run plan:check` runs the lint and the judge (`04-results/judge-report.md`). A person looks only if the verdict is REVISE |
 | 3 | **Run and check** | Person today, automatic later | Execute the cases and record facts as JSON. `npm run check:observations -- <folder>` applies the standards, three runs at a time. A person looks only at failures and `UNSTABLE` results |
 | 4 | **Triage** | **Human** | Confirm each failure is a real bug, set severity and priority, file it. `npm run report` builds the evidence page if you want one |
 
@@ -40,16 +37,16 @@ Needs [Ollama](https://ollama.com/) and Node 18+. The judge reads text only, so 
 
     ollama pull qwen2.5:7b          # once; any model that follows JSON instructions works
     npm run lint:cases              # free structure checks
-    npm run judge:ollama            # scores all cases, writes 05-judge/judge-report.md
+    npm run judge:ollama            # scores all cases, writes 04-results/judge-report.md
     npm run judge:ollama -- --runs 3 --model llama3.1:8b   # repeat to measure stability
 
 The script asks the model about one case at a time (temperature 0, fixed seed), so small models cope. Each case gets six 0-2 scores, a traceability flag, a quote and one suggested fix. With `--runs 3` the report adds a **spread** column: if the judge scores the same case differently between runs, the case or the rubric is ambiguous. That is the stability loop for improving the standards and the judge.
 
 ## The agent observes, code decides
 
-The AI never decides pass or fail. An agent (or a person) records what is on screen as JSON: badge count, prices, form values, totals. `08-scripts/check-observations.mjs` applies the quality standards to those facts and reports each check as `pass`, `FAIL (stable)` or `UNSTABLE` across repeated runs. Details, schema and status: [`06-execution/README.md`](06-execution/README.md).
+The AI never decides pass or fail. An agent (or a person) records what is on screen as JSON: badge count, prices, form values, totals. `08-scripts/check-observations.mjs` applies the quality standards to those facts and reports each check as `pass`, `FAIL (stable)` or `UNSTABLE` across repeated runs. Details, schema and status: [`02-rules/execution.md`](02-rules/execution.md).
 
-    npm run check:observations -- 06-execution/examples
+    npm run check:observations -- 04-results/examples/observations
 
 ## Commands
 
@@ -76,13 +73,13 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 
 5. **Automate execution.** First a plain Playwright observer script (no AI): it runs TC-001 three times and writes the facts as JSON, so stage 3 needs no person. Later a browser-use agent with a local Ollama model in text-only mode, which only records observations while code decides pass or fail.
 6. **Requirements and diffs to cases.** Feed a ticket, a pull request diff or an incident to the generator and get only the new or affected cases, ranked by risk.
-7. **Traceability matrix.** Rule to case to result, plus a list of rules that no case covers. It needs a stable ID on every rule in `02-standards/` and those IDs in each case's "Based on" line, then a script joins rules, cases and check results. It catches gaps (rules with no case), orphans (cases citing a rule that does not exist) and rules whose cases are all blocked by the same earlier defect.
+7. **Traceability matrix.** Rule to case to result, plus a list of rules that no case covers. It needs a stable ID on every rule in `02-rules/` and those IDs in each case's "Based on" line, then a script joins rules, cases and check results. It catches gaps (rules with no case), orphans (cases citing a rule that does not exist) and rules whose cases are all blocked by the same earlier defect.
 8. **Bug triage.** Group duplicate findings by root cause and draft severity and reproduction steps for a human to approve.
 9. **Exploratory testing.** An agent that looks for suspicious behaviour outside the written cases, such as the wrong product opening from a click.
 10. **Production feedback.** Turn each real incident into a permanent standard.
 11. **Cost and metrics.** Track tokens per run, how many cases the judge sends back, and how many findings humans accept.
 
-**Known gaps today:** the browser-use runner is not built; the examples in `06-execution/examples/` are hand-written; the Ollama judge has only been tested against a mock server; most cases need the checkout form, which `problem_user` breaks, so one defect can hide the rest.
+**Known gaps today:** the browser-use runner is not built; the examples in `04-results/examples/observations/` are hand-written; the Ollama judge has only been tested against a mock server; most cases need the checkout form, which `problem_user` breaks, so one defect can hide the rest.
 
 ## Why Playwright isn't in `package.json`
 

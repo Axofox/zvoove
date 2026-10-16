@@ -11,16 +11,16 @@ This workflow produces a proposed manual test plan only. It does not author auto
 Before generating anything, read the following files in this order:
 
 1. `01-task/task.md` — the application, required baseline scenario, and time limit
-2. `02-standards/quality-standards.md` — what "working correctly" means for each area of the shop
-3. `02-standards/test-types.md` — what categories of tests to run and what scenarios to cover
+2. `02-rules/quality-standards.md` — what "working correctly" means for each area of the shop
+3. `02-rules/test-types.md` — what categories of tests to run and what scenarios to cover
 
-The task scenario defines the baseline happy flow. Every other test case must trace back to at least one rule in `02-standards/quality-standards.md` or one scenario in `02-standards/test-types.md`. Do not invent product requirements. `flow.md` is not required; derive observable steps from the task scenario and the application.
+The task scenario defines the baseline happy flow. Every other test case must trace back to at least one rule in `02-rules/quality-standards.md` or one scenario in `02-rules/test-types.md`. Do not invent product requirements. `flow.md` is not required; derive observable steps from the task scenario and the application.
 
 ---
 
 ## Phase 1 — Generate test cases
 
-Write all test cases into a single file: `04-test-cases/test-cases.md`
+Write all test cases into a single file: `04-results/test-cases.md`
 
 ### Format for each test case
 
@@ -48,7 +48,7 @@ Write all test cases into a single file: `04-test-cases/test-cases.md`
 
 - A short suite is allowed when the requester gives a size (for example 5 cases): pick by risk, one per main kind of check, and say which categories are not covered
 - Cover the full happy flow first (TC-001 through however many steps it takes)
-- Then generate one test case per item in `02-standards/test-types.md`, in order: Cart CRUD, Negative, Security, State, UI, Data Integrity
+- Then generate one test case per item in `02-rules/test-types.md`, in order: Cart CRUD, Negative, Security, State, UI, Data Integrity
 - For Cart CRUD: generate a separate test case for each operation — add, add-same-item-twice, update-quantity, remove, empty-cart
 - For Security: include heuristics on specific input fields — name fields, address fields, postal code, email. Note which field type each injection targets.
 - For edge cases: think about what a real user would do wrong — not just empty fields, but partial input, spaces only, numbers in name fields, letters in postal code
