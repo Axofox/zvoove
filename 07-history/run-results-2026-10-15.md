@@ -1,6 +1,6 @@
 # Run results — 2026-10-15
 
-Moved out of `qa/test-cases.md`, which is plan-only. Original header (Run Findings, Run Summary) is in `qa/history/test-cases-before-manual-run-2026-10-15.md`.
+Moved out of `qa/test-cases.md`, which is plan-only. Original header (Run Findings, Run Summary) is in `07-history/test-cases-before-manual-run-2026-10-15.md`.
 
 ## TC-001 — Complete checkout for the required products
 **Status:** FAIL  

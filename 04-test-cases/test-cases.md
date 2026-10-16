@@ -1,15 +1,15 @@
 # Proposed Test Suite — SauceDemo Checkout
 
-**Scope:** `https://www.saucedemo.com/`, using the credentials in `task.md`.
+**Scope:** `https://www.saucedemo.com/`, using the credentials in `01-task/task.md`.
 **Timebox:** 120 minutes total; about 102 minutes of planned execution, 18 for setup and evidence. TC-014 and TC-015 are out of scope (see their timebox lines).
-**Status:** plan only. Results of the 2026-10-15 run are in `qa/history/run-results-2026-10-15.md`.
+**Status:** plan only. Results of the 2026-10-15 run are in `07-history/run-results-2026-10-15.md`.
 Screenshot links are planned evidence destinations, not proof that a file exists.
 
 <a id="tc-001"></a>
 ## TC-001 — Complete checkout for the required products
 
 **Category:** Happy Flow
-**Based on:** `task.md`, Scenario steps 1–7; `qa/quality-standards.md`, Cart, Checkout Form, Order Summary, and Order Confirmation
+**Based on:** `01-task/task.md`, Scenario steps 1–7; `02-standards/quality-standards.md`, Cart, Checkout Form, Order Summary, and Order Confirmation
 **Preconditions:** Start a fresh browser session at the application. Use the provided `problem_user` credentials. Allow approximately 15 minutes.
 **Timebox:** In scope (15 minutes)
 
@@ -35,7 +35,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-002 — Add one item to the cart
 
 **Category:** Cart CRUD
-**Based on:** `qa/test-types.md`, Cart CRUD — Add; `qa/quality-standards.md`, Product Page and Cart
+**Based on:** `02-standards/test-types.md`, Cart CRUD — Add; `02-standards/quality-standards.md`, Product Page and Cart
 **Preconditions:** Fresh session, signed in, cart empty, product listing displayed. Allow 5 minutes.
 **Timebox:** In scope (5 minutes)
 
@@ -55,7 +55,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-003 — Add the same item twice
 
 **Category:** Cart CRUD
-**Based on:** `qa/test-types.md`, Cart CRUD — Add same item twice
+**Based on:** `02-standards/test-types.md`, Cart CRUD — Add same item twice
 **Preconditions:** Fresh session, signed in, cart empty, product listing displayed. Allow 5 minutes.
 **Timebox:** In scope (5 minutes)
 
@@ -75,7 +75,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-004 — Update cart quantity
 
 **Category:** Cart CRUD
-**Based on:** `qa/test-types.md`, Cart CRUD — Update quantity; `qa/quality-standards.md`, Cart
+**Based on:** `02-standards/test-types.md`, Cart CRUD — Update quantity; `02-standards/quality-standards.md`, Cart
 **Preconditions:** Fresh session, signed in, cart contains one Sauce Labs Backpack. Allow 5 minutes.
 **Timebox:** In scope (5 minutes)
 
@@ -95,7 +95,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-005 — Remove an item from the cart
 
 **Category:** Cart CRUD
-**Based on:** `qa/test-types.md`, Cart CRUD — Remove
+**Based on:** `02-standards/test-types.md`, Cart CRUD — Remove
 **Preconditions:** Fresh session, signed in, cart contains one Sauce Labs Bike Light. Allow 4 minutes.
 **Timebox:** In scope (4 minutes)
 
@@ -114,7 +114,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-006 — Empty the cart
 
 **Category:** Cart CRUD
-**Based on:** `qa/test-types.md`, Cart CRUD — Empty cart
+**Based on:** `02-standards/test-types.md`, Cart CRUD — Empty cart
 **Preconditions:** Fresh session, signed in, cart contains both required products. Allow 3 minutes.
 **Timebox:** In scope (3 minutes)
 
@@ -133,7 +133,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-007 — Block checkout with required fields missing
 
 **Category:** Negative
-**Based on:** `qa/test-types.md`, Negative / Edge Cases — Skip required fields; `qa/quality-standards.md`, Checkout Form
+**Based on:** `02-standards/test-types.md`, Negative / Edge Cases — Skip required fields; `02-standards/quality-standards.md`, Checkout Form
 **Preconditions:** Fresh session, signed in, at least one item in cart, on the customer-information form. Allow 5 minutes.
 **Timebox:** In scope (5 minutes)
 
@@ -153,7 +153,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-008 — Navigate backward and forward during checkout
 
 **Category:** Negative
-**Based on:** `qa/test-types.md`, Negative / Edge Cases — Back and forward navigation
+**Based on:** `02-standards/test-types.md`, Negative / Edge Cases — Back and forward navigation
 **Preconditions:** Fresh session, signed in, cart contains both required products, valid customer information entered, order summary reached. Allow 6 minutes.
 **Timebox:** In scope (6 minutes)
 
@@ -173,7 +173,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-009 — Verify multiple quantities and arithmetic
 
 **Category:** Negative
-**Based on:** `qa/test-types.md`, Negative / Edge Cases — Multiple quantities
+**Based on:** `02-standards/test-types.md`, Negative / Edge Cases — Multiple quantities
 **Preconditions:** Fresh session, signed in, cart empty, product listing displayed. Allow 4 minutes.
 **Timebox:** In scope (4 minutes)
 
@@ -193,7 +193,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-010 — Reject script injection in checkout fields
 
 **Category:** Security
-**Based on:** `qa/test-types.md`, Security — XSS / script injection
+**Based on:** `02-standards/test-types.md`, Security — XSS / script injection
 **Preconditions:** Fresh session, signed in, at the customer-information form with a cart item. Use only fields actually exposed by the form. Allow 7 minutes.
 **Timebox:** In scope (7 minutes)
 
@@ -213,7 +213,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-011 — Handle unusually long customer input
 
 **Category:** Security
-**Based on:** `qa/test-types.md`, Security — Unusually long input; test-case-generator heuristics for text fields
+**Based on:** `02-standards/test-types.md`, Security — Unusually long input; test-case-generator heuristics for text fields
 **Preconditions:** Fresh session, signed in, at the customer-information form. Use available name and address fields; allow 6 minutes.
 **Timebox:** In scope (6 minutes)
 
@@ -233,7 +233,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-012 — Handle special characters in customer fields
 
 **Category:** Security
-**Based on:** `qa/test-types.md`, Security — Special characters; test-case-generator heuristics for text fields
+**Based on:** `02-standards/test-types.md`, Security — Special characters; test-case-generator heuristics for text fields
 **Preconditions:** Fresh session, signed in, at the customer-information form. Use available name, address, postal-code, and email field types; allow 5 minutes.
 **Timebox:** In scope (5 minutes)
 
@@ -253,7 +253,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-013 — Refresh during checkout
 
 **Category:** State
-**Based on:** `qa/test-types.md`, State — Refresh mid-checkout
+**Based on:** `02-standards/test-types.md`, State — Refresh mid-checkout
 **Preconditions:** Fresh session, signed in, cart contains both required products, customer information entered, checkout summary reached. Allow 6 minutes.
 **Timebox:** In scope (6 minutes)
 
@@ -273,7 +273,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-014 — Prevent duplicate order from two simultaneous tabs
 
 **Category:** State
-**Based on:** `qa/test-types.md`, State — Two tabs
+**Based on:** `02-standards/test-types.md`, State — Two tabs
 **Preconditions:** Fresh session, signed in, cart populated and checkout available in two tabs. Allow approximately 12 minutes; excluded from this run's timebox.
 **Timebox:** **OUT OF SCOPE** — excluded to preserve the 120-minute limit after the higher-priority single-tab flow and core edge cases.
 
@@ -293,7 +293,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-015 — Communicate session timeout during checkout
 
 **Category:** State
-**Based on:** `qa/test-types.md`, State — Session timeout
+**Based on:** `02-standards/test-types.md`, State — Session timeout
 **Preconditions:** A checkout session that can expire through normal inactivity. Allow up to 10 minutes; excluded from this run's timebox.
 **Timebox:** **OUT OF SCOPE** — timeout duration is unknown and waiting/setup could consume the remaining two-hour budget.
 
@@ -313,7 +313,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-016 — Check checkout controls are reachable
 
 **Category:** UI
-**Based on:** `qa/test-types.md`, UI / Visual — Button and link reachability
+**Based on:** `02-standards/test-types.md`, UI / Visual — Button and link reachability
 **Preconditions:** Fresh session, signed in, proceed through a populated cart to checkout. Allow 4 minutes.
 **Timebox:** In scope (4 minutes)
 
@@ -333,7 +333,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-017 — Use checkout at a reduced viewport height
 
 **Category:** UI
-**Based on:** `qa/test-types.md`, UI / Visual — Viewport size
+**Based on:** `02-standards/test-types.md`, UI / Visual — Viewport size
 **Preconditions:** Fresh session, signed in, browser viewport set to approximately 700 pixels high, cart contains an item. Allow 4 minutes.
 **Timebox:** In scope (4 minutes)
 
@@ -353,7 +353,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-018 — Investigate product-detail and cross-stage consistency
 
 **Category:** Data Integrity
-**Based on:** `qa/quality-standards.md`, Product Page (image, description, and price); Cart (contents and prices); Order Summary (item total); `qa/test-types.md`, Data Integrity — Price consistency
+**Based on:** `02-standards/quality-standards.md`, Product Page (image, description, and price); Cart (contents and prices); Order Summary (item total); `02-standards/test-types.md`, Data Integrity — Price consistency
 **Preconditions:** Fresh session, signed in, cart empty, product listing displayed. Perform this investigation for Sauce Labs Backpack and Sauce Labs Bike Light. Allow 10 minutes.
 **Timebox:** In scope (10 minutes)
 
@@ -376,7 +376,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-019 — Check that a discount is applied once
 
 **Category:** Data Integrity
-**Based on:** `qa/test-types.md`, Data Integrity — Discount codes, single application; `qa/quality-standards.md`, Product Page and Order Summary
+**Based on:** `02-standards/test-types.md`, Data Integrity — Discount codes, single application; `02-standards/quality-standards.md`, Product Page and Order Summary
 **Preconditions:** Fresh session, signed in, cart contains an eligible item. A promotion code/control must be discoverable in the UI or supplied by the application; do not invent a code. Allow 4 minutes.
 **Timebox:** In scope (4 minutes); if no promotion is offered, report discount-code behavior unsupported.
 
@@ -396,7 +396,7 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 ## TC-020 — Verify discount arithmetic independently
 
 **Category:** Data Integrity
-**Based on:** `qa/test-types.md`, Data Integrity — Discount codes, correct calculation; `qa/quality-standards.md`, Order Summary
+**Based on:** `02-standards/test-types.md`, Data Integrity — Discount codes, correct calculation; `02-standards/quality-standards.md`, Order Summary
 **Preconditions:** Fresh session, signed in, eligible cart and a valid promotion code/control discoverable in the UI. Do not invent a code. Allow 4 minutes.
 **Timebox:** In scope (4 minutes); if no promotion is offered, report discount-code calculation unsupported.
 

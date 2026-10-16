@@ -1,6 +1,6 @@
 # Manual Test Plan — Shared Browser Session — 2026-10-15
 
-**Scope:** Time-bounded manual checks against SauceDemo, based on `task.md` and the applicable quality standards and test types.
+**Scope:** Time-bounded manual checks against SauceDemo, based on `01-task/task.md` and the applicable quality standards and test types.
 **Session timebox:** 45 minutes total: MTP-001 (15 min), MTP-002 (8 min), MTP-003 (8 min), MTP-004 (8 min), MTP-005 (6 min). Stop a case at its time limit and record the furthest step reached.
 **Execution status:** MANUAL RUN COMPLETE. All five cases were attempted in the shared browser; downstream checkout steps blocked by the form defect are marked not exercised.
 
@@ -20,8 +20,8 @@
 ## MTP-001 — Checkout through the furthest reachable step
 
 **Category:** Happy Flow
-**Based on:** `task.md`, Scenario steps 1–7; `qa/quality-standards.md`, Cart, Checkout Form, Order Summary, and Order Confirmation
-**Preconditions:** Open a fresh SauceDemo session, use the credentials in `task.md`, and ensure the cart is empty. Allow 15 minutes. Use distinct valid customer values that can be checked field by field.
+**Based on:** `01-task/task.md`, Scenario steps 1–7; `02-standards/quality-standards.md`, Cart, Checkout Form, Order Summary, and Order Confirmation
+**Preconditions:** Open a fresh SauceDemo session, use the credentials in `01-task/task.md`, and ensure the cart is empty. Allow 15 minutes. Use distinct valid customer values that can be checked field by field.
 **Timebox:** 15 minutes; do not repeat a blocked transition.
 
 ### Steps
@@ -49,7 +49,7 @@
 ## MTP-002 — Compare Backpack and Bike Light listing details
 
 **Category:** Data Integrity
-**Based on:** `qa/quality-standards.md`, Product Page (product-specific image, descriptions, and price consistency); `qa/test-types.md`, Data Integrity — Price consistency
+**Based on:** `02-standards/quality-standards.md`, Product Page (product-specific image, descriptions, and price consistency); `02-standards/test-types.md`, Data Integrity — Price consistency
 **Preconditions:** Signed in with the product listing visible. Cart contents do not affect this comparison. Allow 8 minutes.
 **Timebox:** 8 minutes.
 
@@ -76,7 +76,7 @@
 ## MTP-003 — Check quantity editing and repeated add
 
 **Category:** Cart CRUD
-**Based on:** `qa/test-types.md`, Cart CRUD — Add same item twice and Update quantity; Multiple quantities; `qa/quality-standards.md`, Cart quantities and prices
+**Based on:** `02-standards/test-types.md`, Cart CRUD — Add same item twice and Update quantity; Multiple quantities; `02-standards/quality-standards.md`, Cart quantities and prices
 **Preconditions:** Fresh signed-in session, empty cart, product listing visible. Allow 8 minutes.
 **Timebox:** 8 minutes.
 
@@ -103,7 +103,7 @@
 ## MTP-004 — Verify checkout values and Continue validation state
 
 **Category:** Negative
-**Based on:** `qa/quality-standards.md`, Checkout Form; `qa/test-types.md`, Negative / Edge Cases — Skip required fields
+**Based on:** `02-standards/quality-standards.md`, Checkout Form; `02-standards/test-types.md`, Negative / Edge Cases — Skip required fields
 **Preconditions:** Fresh signed-in session with one product in the cart; customer-information form displayed. Allow 8 minutes. Use valid, distinguishable values for first name, last name, and postal code.
 **Timebox:** 8 minutes; submit once and do not repeatedly retry a blocked form.
 
@@ -129,7 +129,7 @@
 ## MTP-005 — Confirm required-field validation blocks progress
 
 **Category:** Negative
-**Based on:** `qa/quality-standards.md`, Checkout Form — required fields enforced; `qa/test-types.md`, Negative / Edge Cases — Skip required fields
+**Based on:** `02-standards/quality-standards.md`, Checkout Form — required fields enforced; `02-standards/test-types.md`, Negative / Edge Cases — Skip required fields
 **Preconditions:** Fresh signed-in session with one product in the cart; customer-information form displayed with all fields empty. Allow 6 minutes.
 **Timebox:** 6 minutes.
 
