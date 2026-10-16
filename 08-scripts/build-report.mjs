@@ -22,9 +22,10 @@ const body = cases.map((c) => {
   return `<details id="${esc(c.id.toLowerCase())}" ${c.status === 'FAIL' ? 'open' : ''}><summary>${badge(c.status)} <b>${esc(c.id)}</b> ${esc(c.title)} <small>${c.deterministicFailures.length} failed checks</small></summary>
 <p>${c.deterministicFailures.length ? `${c.deterministicFailures.length} deterministic check(s) failed.` : 'All recorded deterministic checks passed.'}</p>
 ${c.deterministicFailures.length ? `<ul>${c.deterministicFailures.map((failure) => `<li>${esc(failure)}</li>`).join('')}</ul>` : ''}
-<table><tr><th>#</th><th>Action</th><th>Expected</th><th>Checks</th></tr>
+<table><tr><th>#</th><th>Action</th><th>Expected</th><th>Checks</th><th>Evidence</th></tr>
 ${c.steps.map((s) => `<tr><td>${s.n}</td><td>${esc(s.action)}</td><td>${esc(s.expected)}</td>
-<td>${s.error ? `<div class="bad">${esc(s.error)}</div>` : ''}${s.checks.map((k) => `<div class="${k.ok ? 'ok' : 'bad'}">${k.ok ? '✓' : '✗'} ${esc(k.name)}${k.detail ? ` <small>${esc(k.detail)}</small>` : ''}</div>`).join('')}</td></tr>`).join('')}
+<td>${s.error ? `<div class="bad">${esc(s.error)}</div>` : ''}${s.checks.map((k) => `<div class="${k.ok ? 'ok' : 'bad'}">${k.ok ? '✓' : '✗'} ${esc(k.name)}${k.detail ? ` <small>${esc(k.detail)}</small>` : ''}</div>`).join('')}</td>
+<td><a href="../evidence/${esc(s.screenshot)}"><img loading="lazy" src="../evidence/${esc(s.screenshot)}" width="160"></a></td></tr>`).join('')}
 </table></details>`;
 }).join('\n');
 const findings = cases.filter((c) => c.status === 'FAIL');
