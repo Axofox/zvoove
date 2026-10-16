@@ -15,7 +15,7 @@ Folders are numbered in the order the work happens. `.github/agents/` keeps its 
 | `02-standards/test-types.md` | Extra categories: cart CRUD, negative, security, state, UI, data integrity |
 | `03-generator/test-case-generator.md` | Instructions and format for the generator |
 | `04-test-cases/test-cases.md` | The generated suite (20 cases, TC-001 to TC-020) |
-| `05-judge/judge-rubric.md` | How the judge scores the plan |
+| `05-judge/` | The rubric, and `examples/judge-report-mock.md`, a mock of the judge report (invented scores, real format) |
 | `06-execution/` | How execution works (agent observes, code decides), example observations |
 | `07-history/` | Archived runs |
 | `.github/agents/` | Copilot agents: **Test Case Generator**, **QA Judge** |
