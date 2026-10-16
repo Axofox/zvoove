@@ -63,6 +63,10 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
    **Why:** customers find the bugs the tests miss, and today that knowledge is lost between support and QA.
 2. **Improve the standards and the judge by repetition.** Re-run until the same results come back. Same issues every time means tight wording; different results mean ambiguity. Also: keep known-bad plans the judge must reject, pin the model and temperature, and save each run to show the trend.
    **Why:** a judge that is consistent can still be wrong, and without repetition nobody knows which parts of the standards are vague.
+   **Next, from the first real run** (a local 7B model gave 11–12 out of 12 to every case, with generic suggestions):
+   1. *Known-bad plan test.* Add a `--plan` option and a small plan with deliberate flaws (a case with no expected outcome, a duplicate). If the judge scores those 10 or more, it is not trustworthy yet.
+   2. *Real stability check.* Use a different seed on each run, and a little temperature when `--runs` is above 1. Today the seed is fixed, so repeated runs are identical and the spread is always 0.
+   3. *Relevant "Top fix".* Ask the model to name a fix for its lowest-scoring criterion, and to say "None" when every score is 2.
 3. **Apply the standards to the code.** An AI reads the application's source and checks, from a QA point of view, whether each standard is implemented (does the form keep the last name, is the total the sum plus tax). The output is suspected defects with file and lines; the browser run confirms them. Needs the source, so it cannot be shown on SauceDemo.
    **Why:** finds bugs before the app runs and points the tests at risky places. (`check-observations.mjs` today checks recorded observations, not code.)
 4. **Blind review at every human step.** A second AI, preferably a different model, produces the same artifact from the upstream inputs only. Code compares it with the human's version, and the human reviews only the differences. It applies to the standards, test types, test cases, judge rubric and triage; add rule IDs first, and repeat runs to keep only repeating differences.
@@ -78,7 +82,7 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 10. **Production feedback.** Turn each real incident into a permanent standard.
 11. **Cost and metrics.** Track tokens per run, how many cases the judge sends back, and how many findings humans accept.
 
-**Known gaps today:** the browser-use runner is not built; the examples in `03-results/examples/observations/` are hand-written; the Ollama judge has only been tested against a mock server; most cases need the checkout form, which `problem_user` breaks, so one defect can hide the rest.
+**Known gaps today:** the browser-use runner is not built; the examples in `03-results/examples/observations/` are hand-written; the Ollama judge ran once for real, and was lenient and repetitive (see idea 2); most cases need the checkout form, which `problem_user` breaks, so one defect can hide the rest.
 
 ## Why Playwright isn't in `package.json`
 
