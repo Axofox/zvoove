@@ -5,6 +5,7 @@
   "scripts": {
     "report": "node 08-scripts/build-report.mjs",
     "lint:cases": "node 08-scripts/lint-cases.mjs",
-    "judge:ollama": "node 08-scripts/judge-ollama.mjs"
+    "judge:ollama": "node 08-scripts/judge-ollama.mjs",
+    "check:observations": "node 08-scripts/check-observations.mjs"
   }
 }

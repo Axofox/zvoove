@@ -16,7 +16,8 @@ Folders are numbered in the order the work happens. `.github/agents/` keeps its 
 | `03-generator/test-case-generator.md` | Instructions and format for the generator |
 | `04-test-cases/test-cases.md` | The generated suite (20 cases, TC-001 to TC-020) |
 | `05-judge/judge-rubric.md` | How the judge scores the plan |
-| `06-execution/manual-test-plan-2026-10-15.md`, `07-history/` | A manual session plan and archived runs |
+| `06-execution/` | How execution works (agent observes, code decides), example observations, a manual session plan |
+| `07-history/` | Archived runs |
 | `.github/agents/` | Copilot agents: **QA Orchestrator**, **Test Case Generator**, **QA Judge** |
 | `08-scripts/lint-cases.mjs` | Free, deterministic structure checks on the plan |
 | `08-scripts/build-report.mjs` | Builds `reports/index.html` from saved results and screenshots |
@@ -51,6 +52,12 @@ Needs [Ollama](https://ollama.com/) and Node 18+. The judge reads text only, so 
     npm run judge:ollama -- --runs 3 --model llama3.1:8b   # repeat to measure stability
 
 The script asks the model about one case at a time (temperature 0, fixed seed), so small models cope. Each case gets six 0-2 scores, a traceability flag, a quote and one suggested fix. With `--runs 3` the report adds a **spread** column: if the judge scores the same case differently between runs, the case or the rubric is ambiguous. That is the stability loop for improving the standards and the judge.
+
+## The agent observes, code decides
+
+The AI never decides pass or fail. An agent (or a person) records what is on screen as JSON: badge count, prices, form values, totals. `08-scripts/check-observations.mjs` applies the quality standards to those facts and reports each check as `pass`, `FAIL (stable)` or `UNSTABLE` across repeated runs. Details, schema and status: [`06-execution/README.md`](06-execution/README.md).
+
+    npm run check:observations -- 06-execution/examples
 
 ## Commands
 
