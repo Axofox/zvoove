@@ -4,7 +4,6 @@ import path from 'node:path';
 
 const RES = path.resolve('evidence'), OUT = path.resolve('reports');
 fs.mkdirSync(OUT, { recursive: true });
-fs.cpSync(path.join(RES, 'screenshots'), path.join(OUT, 'screenshots'), { recursive: true });
 
 const esc = (s = '') => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const ids = fs.readdirSync(RES).filter((f) => /^TC-.*\.json$/.test(f)).sort();
@@ -26,7 +25,7 @@ ${c.deterministicFailures.length ? `<ul>${c.deterministicFailures.map((failure) 
 <table><tr><th>#</th><th>Action</th><th>Expected</th><th>Checks</th><th>Evidence</th></tr>
 ${c.steps.map((s) => `<tr><td>${s.n}</td><td>${esc(s.action)}</td><td>${esc(s.expected)}</td>
 <td>${s.error ? `<div class="bad">${esc(s.error)}</div>` : ''}${s.checks.map((k) => `<div class="${k.ok ? 'ok' : 'bad'}">${k.ok ? '✓' : '✗'} ${esc(k.name)}${k.detail ? ` <small>${esc(k.detail)}</small>` : ''}</div>`).join('')}</td>
-<td><a href="${s.screenshot}"><img loading="lazy" src="${s.screenshot}" width="160"></a></td></tr>`).join('')}
+<td><a href="../evidence/${esc(s.screenshot)}"><img loading="lazy" src="../evidence/${esc(s.screenshot)}" width="160"></a></td></tr>`).join('')}
 </table></details>`;
 }).join('\n');
 const findings = cases.filter((c) => c.status === 'FAIL');
