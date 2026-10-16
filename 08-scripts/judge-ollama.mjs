@@ -109,3 +109,4 @@ ${runs > 1 ? (unstable.length ? `Unstable cases (the rubric or the case is ambig
 `;
 fs.writeFileSync('05-judge/judge-report.md', report);
 console.log(`\n${verdict}: mean ${mean.toFixed(1)}/12, ${weak.length} to revisit, ${unstable.length} unstable. Written to 05-judge/judge-report.md`);
+process.exit(verdict === 'ACCEPT' ? 0 : 1);
