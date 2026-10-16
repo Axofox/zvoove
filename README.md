@@ -64,11 +64,13 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 ## What to improve next
 
 **From the author (my ideas):**
+
 1. **Customer reporting extension.** A browser extension that captures the URL, a screenshot, console logs and recent clicks with one button, so customers report problems to support more easily. An AI turns it into a structured ticket and links it to the matching test case, or proposes a new case. Support tickets then feed the test suite.
 2. **Improve the standards and the judge by repetition.** Re-run until the same results come back, not different ones. When the same issues are found every time, the standards and the rubric are tight. Where results differ, the wording is ambiguous. *Claude's additions:* apply it to both targets, the judge (`--runs 3` exists) and the test results (flag any check that changes between runs); keep a few known-bad plans (a case with no expected outcome, a duplicate) that the judge must always reject, because a judge can be consistent and still wrong; pin the model and temperature; and keep the results of each run to show the trend.
 3. **Apply the standards from code.** Experiment with running the quality standards directly as code. The first step exists: `08-scripts/check-observations.mjs`.
 
 **Added by Claude (suggestions):**
+
 4. **Browser-use agent.** Run the cases with browser-use and a local Ollama model, in text-only mode. The agent only records observations; code decides pass or fail. Start with the happy flow (TC-001) only.
 5. **Requirements and diffs to cases.** Feed a ticket, a pull request diff or an incident to the generator and get only the new or affected cases, ranked by risk.
 6. **Traceability matrix.** Rule to case to result, plus a list of rules that no case covers. It needs a stable ID on every rule in `02-standards/` and those IDs in each case's "Based on" line, then a script joins rules, cases and check results. It catches gaps (rules with no case), orphans (cases citing a rule that does not exist) and rules whose cases are all blocked by the same earlier defect.
