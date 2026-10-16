@@ -1,0 +1,8 @@
+{
+  "name": "zvoove-qa-case-planning",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "report": "node scripts/build-report.mjs"
+  }
+}

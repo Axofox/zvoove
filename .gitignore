@@ -1,0 +1,5 @@
+node_modules/
+.env
+evidence/
+reports/
+.DS_Store
