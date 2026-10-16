@@ -41,6 +41,17 @@ Requirements: Node 18+ and VS Code with GitHub Copilot (agent mode). No `npm ins
 
 `evidence/` and `reports/` are gitignored, so they exist only on the machine that produced them. Past results are kept in `07-history/`.
 
+## Run the judge locally with Ollama (no GitHub, no Copilot, no tokens)
+
+Needs [Ollama](https://ollama.com/) and Node 18+. The judge reads text only, so no screenshots are involved.
+
+    ollama pull qwen2.5:7b          # once; any model that follows JSON instructions works
+    npm run lint:cases              # free structure checks
+    npm run judge:ollama            # scores all cases, writes 05-judge/judge-report.md
+    npm run judge:ollama -- --runs 3 --model llama3.1:8b   # repeat to measure stability
+
+The script asks the model about one case at a time (temperature 0, fixed seed), so small models cope. Each case gets six 0-2 scores, a traceability flag, a quote and one suggested fix. With `--runs 3` the report adds a **spread** column: if the judge scores the same case differently between runs, the case or the rubric is ambiguous. That is the stability loop for improving the standards and the judge.
+
 ## Commands
 
     npm run lint:cases   # structure checks, exits 1 on problems
