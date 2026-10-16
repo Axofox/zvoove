@@ -288,7 +288,6 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 **Fail criteria:** The second tab permits a duplicate order or presents stale state as current without warning.
 **Screenshot:** Not captured; this case was out of scope.
 
-### Result
 
 <a id="tc-015"></a>
 ## TC-015 — Communicate session timeout during checkout
@@ -309,7 +308,6 @@ Screenshot links are planned evidence destinations, not proof that a file exists
 **Fail criteria:** The user is left on a broken page or loses checkout/cart state silently.
 **Screenshot:** Not captured; this case was out of scope.
 
-### Result
 
 <a id="tc-016"></a>
 ## TC-016 — Check checkout controls are reachable
