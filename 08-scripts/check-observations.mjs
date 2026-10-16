@@ -45,14 +45,18 @@ const checks = [
   ['cart-cleared', 'Order Confirmation: cart is cleared after the order', (o) => (!o.confirmation?.shown || o.confirmation.badgeAfter === 0 ? null : `badge still ${o.confirmation.badgeAfter}`)],
 ];
 
-const runs = files.map((f) => {
-  const o = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+// A file holds one run, or {"runs": [...]} for several.
+const observations = files.flatMap((f) => {
+  const data = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'));
+  return (data.runs ?? [data]).map((o, i) => ({ file: data.runs ? `${f}#${i + 1}` : f, o }));
+});
+const runs = observations.map(({ file, o }) => {
   const failed = {};
   for (const [id, , fn] of checks) {
     const err = fn(o);
     if (err) failed[id] = err;
   }
-  return { file: f, failed };
+  return { file, failed };
 });
 
 const ids = checks.map(([id]) => id);
@@ -64,7 +68,7 @@ const rows = ids.map((id) => {
   return `| ${id} | ${rule} | ${hits}/${runs.length} | ${verdict} | ${detail.replace(/\|/g, '/')} |`;
 });
 const unstable = rows.filter((r) => r.includes('UNSTABLE')).length;
-const report = `# Check report\n\nRuns: ${runs.length} (${files.join(', ')})\n\n| Check | Standard | Runs failing | Result | Example |\n|---|---|---|---|---|\n${rows.join('\n')}\n\n${unstable ? `${unstable} check(s) gave different results between runs: the agent or the page is not repeatable, do not trust those.` : 'Every check gave the same result in every run.'}\n`;
+const report = `# Check report\n\nRuns: ${runs.length} (${runs.map((r) => r.file).join(', ')})\n\n| Check | Standard | Runs failing | Result | Example |\n|---|---|---|---|---|\n${rows.join('\n')}\n\n${unstable ? `${unstable} check(s) gave different results between runs: the agent or the page is not repeatable, do not trust those.` : 'Every check gave the same result in every run.'}\n`;
 console.log(report);
 fs.mkdirSync('evidence', { recursive: true });
 fs.writeFileSync('evidence/check-report.md', report);
