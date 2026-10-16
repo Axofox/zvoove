@@ -1,7 +1,7 @@
 # Quality Standards — E-commerce Checkout
 
 These rules define what "working correctly" means for an online shop checkout flow.
-The AI agent uses these standards to judge every step it observes.
+The test-case generator and the QA judge use these standards: the generator to derive cases, the judge to check each case traces to a rule here. A human applies them when executing.
 
 ---
 

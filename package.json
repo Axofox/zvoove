@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "report": "node scripts/build-report.mjs"
+    "report": "node 08-scripts/build-report.mjs",
+    "lint:cases": "node 08-scripts/lint-cases.mjs"
   }
 }
