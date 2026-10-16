@@ -37,7 +37,7 @@ Requirements: Node 18+. The Copilot steps need VS Code with GitHub Copilot (agen
 
 AI proposes and advises, code decides repeatable facts, humans own the standards, the severity and the sign-off.
 
-`evidence/` and `reports/` are gitignored, so they exist only on the machine that produced them. Past results are in `07-history/`.
+`evidence/` and `reports/` are gitignored, so they exist only on the machine that produced them. The report contains no screenshots, only the recorded checks, so `reports/index.html` stands on its own. Past results are in `07-history/`.
 
 ## Run the judge locally with Ollama (no GitHub, no Copilot, no tokens)
 
