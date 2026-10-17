@@ -76,7 +76,7 @@ Every finding is written down once in `05-findings/`, with its evidence, a sugge
 
 ## Plan stage (optional)
 
-The **Test Case Generator** agent writes a manual test plan to `03-results/test-cases.md`, and `npm run lint:cases` checks its structure. The checks in stages 2 and 3 are written directly from the standards, so the plan is not an input to them. The AI judge that used to score the plan was removed on 2026-10-17: a local 7B model gave 11 to 12 out of 12 to every case, and the observe, probe and explore stages made it unnecessary for the proof. It is in git history (`.github/agents/qa-judge.agent.md`, `02-rules/judge-rubric.md`, `04-scripts/judge-ollama.mjs`).
+The **Test Case Generator** agent writes a manual test plan to `03-results/test-cases.md`, and `npm run lint:cases` checks its structure. The checks in stages 2 and 3 are written directly from the standards, so the plan is not an input to them.
 
 ## Ideas not built yet
 
