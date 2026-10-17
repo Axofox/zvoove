@@ -56,7 +56,7 @@ Rules:
 - Work only from the page you are shown. Never guess what is on other pages.
 - Pick exactly one action: click (an element id), fill (an element id and text), select (an element id and an option), back, or done.
 - Report at most one observation per step, only when something on the CURRENT page breaks one of the standards below. "observation" uses the category "none" (with empty summary and quote) otherwise.
-- An observation needs a category from the list, a short summary, and a quote: text copied exactly from the page (a label, a message, a price, an image file name). If you cannot quote it, do not report it.
+- An observation needs a category from the list, a short summary, and a quote: 2 to 8 words copied exactly from the page text, an element label or an image file name. If you cannot quote it, do not report it.
 - You do not decide whether the shop passes or fails. A person does.
 - Stop with "done" when your mission is covered or you are repeating yourself.
 
@@ -92,14 +92,16 @@ async function snapshot(page) {
 
 const corpus = (snap) => normalise([snap.url, snap.text, ...snap.elements.flatMap((e) => [e.label, e.value, ...(e.options ?? [])]), ...snap.images.flatMap((i) => [i.alt, i.src])].join(' '));
 
-function describe(snap) {
-  const els = snap.elements.map((e) => `[${e.id}] ${e.tag}${e.type ? `:${e.type}` : ''} "${e.label}"${e.value !== undefined ? ` value="${e.value}"` : ''}${e.options ? ` options=${e.options.join('|')}` : ''}`).join('\n');
+const keyOf = (snap, el, text) => `${new URL(snap.url).pathname}|${el.tag}|${el.label}|${text ?? ''}`;
+
+function describe(snap, tried) {
+  const els = snap.elements.map((e) => `[${e.id}] ${tried.has(keyOf(snap, e, '')) ? '(already clicked) ' : ''}${e.tag}${e.type ? `:${e.type}` : ''} "${e.label}"${e.value !== undefined ? ` value="${e.value}"` : ''}${e.options ? ` options=${e.options.join('|')}` : ''}`).join('\n');
   const imgs = snap.images.map((i) => `alt="${i.alt}" src="${i.src}"`).join('\n');
   return `URL: ${snap.url}\n\nPage text:\n${snap.text}\n\nElements you can use:\n${els}\n\nImages:\n${imgs || '(none)'}`;
 }
 
-async function askModel(charter, step, history, reported, snap, stepSeed) {
-  const user = `Mission: ${charter.mission}\nStep ${step} of at most ${charter.maxSteps}.\n\nRecent steps:\n${history.slice(-5).join('\n') || '(none yet)'}\n\nAlready reported (do not repeat):\n${reported.join('\n') || '(nothing)'}\n\n${describe(snap)}`;
+async function askModel(charter, step, history, reported, snap, stepSeed, tried) {
+  const user = `Mission: ${charter.mission}\nThings to check, in any order:\n${(charter.checklist ?? []).map((c) => `- ${c}`).join('\n') || '- (none)'}\nStep ${step} of at most ${charter.maxSteps}.\n\nRecent steps:\n${history.slice(-5).join('\n') || '(none yet)'}\n\nAlready reported (do not repeat):\n${reported.join('\n') || '(nothing)'}\n\n${describe(snap, tried)}`;
   const response = await fetch(`${host}/api/chat`, {
     method: 'POST',
     signal: AbortSignal.timeout(240000),
@@ -145,12 +147,15 @@ async function session(browser, charter, run) {
   const history = [];
   const reported = [];
   const seen = new Set();
+  const tried = new Set();
+  let repeatsInARow = 0;
+  log.repeats = 0;
   for (let step = 1; step <= charter.maxSteps; step += 1) {
     const snap = await snapshot(page);
     let reply;
     console.log(`  ${charter.id} run ${run} step ${step}/${charter.maxSteps}: asking the model...`);
     try {
-      reply = await askModel(charter, step, history, reported, snap, seed + run * 1000 + step);
+      reply = await askModel(charter, step, history, reported, snap, seed + run * 1000 + step, tried);
     } catch (error) {
       log.invalidResponses += 1;
       log.steps.push({ step, url: snap.url, error: String(error.message).slice(0, 200) });
@@ -171,6 +176,20 @@ async function session(browser, charter, run) {
       entry.observation = grounded ? 'accepted' : 'rejected';
     }
     if (reply.action.type === 'done') { entry.result = 'done'; log.steps.push(entry); log.stoppedBecause = 'model said done'; break; }
+    const chosen = snap.elements[reply.action.id];
+    const actionKey = ['click', 'select', 'fill'].includes(reply.action.type) && chosen ? keyOf(snap, chosen, reply.action.type === 'click' ? '' : reply.action.text) : null;
+    if (actionKey && tried.has(actionKey)) {
+      entry.result = 'repeat, not executed';
+      log.repeats += 1;
+      repeatsInARow += 1;
+      log.steps.push(entry);
+      console.log(`  ${charter.id} run ${run} step ${step}/${charter.maxSteps}: ${reply.action.type} #${reply.action.id} -> repeat, not executed`);
+      history.push(`step ${step}: ${reply.action.type} #${reply.action.id} "${chosen.label}" -> you already did this on this page; choose something different`);
+      if (repeatsInARow >= 3) { log.stoppedBecause = 'stuck: three repeated actions in a row'; break; }
+      continue;
+    }
+    repeatsInARow = 0;
+    if (actionKey) tried.add(actionKey);
     try {
       entry.result = await perform(page, reply.action);
     } catch (error) {

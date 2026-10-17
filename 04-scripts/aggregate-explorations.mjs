@@ -39,12 +39,12 @@ const rows = [...groups.values()].map((g) => {
 
 const metric = [...byCharter.entries()].map(([charter, list]) => {
   const sum = (fn) => list.reduce((a, s) => a + fn(s), 0);
-  return `| ${charter} | ${list.length} | ${(sum((s) => s.steps.length) / list.length).toFixed(1)} | ${sum((s) => s.observations.length)} | ${sum((s) => s.rejected.length)} | ${sum((s) => s.invalidResponses)} |`;
+  return `| ${charter} | ${list.length} | ${(sum((s) => s.steps.length) / list.length).toFixed(1)} | ${sum((s) => s.observations.length)} | ${sum((s) => s.rejected.length)} | ${sum((s) => s.invalidResponses)} | ${sum((s) => s.repeats ?? 0)} |`;
 });
 
 const table = rows.map((r) => `| ${r.key} | ${r.seen}/${r.total} | ${r.cls} | ${String(r.example.summary).replace(/\|/g, '/')} | "${String(r.example.quote).replace(/\|/g, '/').slice(0, 60)}" | ${r.known.join(', ') || '**not in the register**'} |`);
 const newOnes = rows.filter((r) => !r.known.length).length;
-const report = `# Exploration report\n\nSessions: ${sessions.length}, model ${sessions[0].model}, Ollama ${sessions[0].ollamaVersion}\n\n## What came back\n\n| Key (charter:category:page) | Seen | Class | Example summary | Quote | Register |\n|---|---|---|---|---|---|\n${table.join('\n') || '| (nothing reported) | | | | | |'}\n\n${newOnes} group(s) are not in the register: a person decides what each one is.\n\n## How the model behaved\n\n| Charter | Sessions | Avg steps | Accepted observations | Rejected (quote not on the page) | Invalid replies |\n|---|---|---|---|---|---|\n${metric.join('\n')}\n\nA rejected observation is one the model reported without being able to quote it from the page. A high number means the model is guessing.\n`;
+const report = `# Exploration report\n\nSessions: ${sessions.length}, model ${sessions[0].model}, Ollama ${sessions[0].ollamaVersion}\n\n## What came back\n\n| Key (charter:category:page) | Seen | Class | Example summary | Quote | Register |\n|---|---|---|---|---|---|\n${table.join('\n') || '| (nothing reported) | | | | | |'}\n\n${newOnes} group(s) are not in the register: a person decides what each one is.\n\n## How the model behaved\n\n| Charter | Sessions | Avg steps | Accepted observations | Rejected (quote not on the page) | Invalid replies | Repeated actions (not executed) |\n|---|---|---|---|---|---|---|\n${metric.join('\n')}\n\nA rejected observation is one the model reported without being able to quote it from the page. A high number means the model is guessing.\n`;
 console.log(report);
 fs.mkdirSync('evidence', { recursive: true });
 fs.writeFileSync('evidence/explore-report.md', report);

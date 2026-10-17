@@ -1,5 +1,10 @@
 {
   "id": "catalogue",
   "mission": "Look at the product list and open a few products. Check that sorting changes the list, that each product has its own picture and description, and that prices agree between the list and the product page.",
-  "maxSteps": 14
+  "maxSteps": 14,
+  "checklist": [
+    "Sort by each option (A to Z, Z to A, price low to high, price high to low) and check the list order really changes",
+    "Open at least three products and compare the picture, name, description and price with the list",
+    "Look for two different products showing the same picture or the same description"
+  ]
 }
