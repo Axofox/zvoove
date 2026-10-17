@@ -65,20 +65,26 @@ async function observeOnce(browser) {
     retained[field] = await page.inputValue(`[data-test="${field}"]`);
   }
   await page.click('[data-test="continue"]');
+  // Wait for the page to settle either way: the summary page, or the form's error banner.
+  await Promise.race([
+    page.waitForURL(/checkout-step-two/),
+    page.locator('[data-test="error"]').waitFor(),
+  ]).catch(() => {});
 
   let summary = null;
-  if (await page.locator('[data-test="subtotal-label"]').count()) {
+  if (page.url().includes('checkout-step-two')) {
     summary = {
-      itemTotal: money(await page.locator('[data-test="subtotal-label"]').innerText()),
-      tax: money(await page.locator('[data-test="tax-label"]').innerText()),
-      total: money(await page.locator('[data-test="total-label"]').innerText()),
+      itemTotal: money(await page.locator('[data-test="subtotal-label"], .summary_subtotal_label').innerText()),
+      tax: money(await page.locator('[data-test="tax-label"], .summary_tax_label').innerText()),
+      total: money(await page.locator('[data-test="total-label"], .summary_total_label').innerText()),
     };
   }
 
   let shown = false;
   if (summary) {
     await page.click('[data-test="finish"]');
-    shown = (await page.locator('[data-test="complete-header"]').count()) > 0;
+    await page.waitForURL(/checkout-complete/).catch(() => {});
+    shown = page.url().includes('checkout-complete') && (await page.locator('[data-test="complete-header"], .complete-header').count()) > 0;
   }
   const badgeAfter = await badgeCount(page);
   await context.close();
