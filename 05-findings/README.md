@@ -42,6 +42,10 @@ The AI may *suggest* a severity and must give the reason in one line, quoting th
 | [F-003](F-003-same-image-everywhere.md) | Every product shows the same placeholder image | product-images-distinct | every run | major | unconfirmed |
 | [D-001](D-001-add-same-item-twice.md) | Adding the same item twice: not offered by the shop | cart-add-twice (n/a) | every run | not rated | open decision |
 
+## Findings from the explorer
+
+The explorer reports groups keyed `charter:category:page`. When a person decides a group is the same as an existing finding, they add the line `Explorer key: <key>` to that file. A group that is a new problem gets its own `F-` file with the same line. Groups with no line are listed as "not in the register".
+
 ## Untested because of F-001
 
 The totals (`item-total`, `grand-total`), the confirmation page content and `cart-cleared` pass only because the summary is never reached on `problem_user`. They are **not verified**, and the register keeps that visible here until F-001 is fixed or the flow can be run another way.

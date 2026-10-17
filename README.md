@@ -91,6 +91,24 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 
     npm run probe -- --user problem_user --runs 3 && npm run check:probes -- evidence/probes/problem_user
 
+## Exploratory stage (local Ollama, no paid API)
+
+`04-scripts/explore-ollama.mjs` lets a local model explore the shop. It is the only part that is not deterministic, so it is fenced in:
+
+- The model sees the page as text (visible text, the usable elements with ids, image file names) plus `02-rules/quality-standards.md` and `test-types.md`, and picks **one action from a fixed menu**: click, fill, select, back, done. Playwright performs it. Missions come from `06-charters/*.json` and each session has a step budget.
+- The model may report an observation with a category from a fixed list and a **quote copied from the page**. Code rejects the observation when the quote is not on the page, so it cannot report something it did not see. Dialogs and script errors are detected by code, not by the model.
+- Each run uses a different seed. `04-scripts/aggregate-explorations.mjs` groups the observations by `charter:category:page` (not by wording, which varies) and reports how many runs each came back in: every run is a finding, some runs is intermittent, one run is a candidate. It also reports how many observations were rejected for a missing quote and how many replies were invalid, which says how much to trust the model.
+- To mark a group as known, put the line `Explorer key: <key>` in its finding file in `05-findings/`. Groups with no such line are shown as not in the register.
+
+```sh
+ollama serve                      # in another terminal; Ollama 0.5 or newer
+ollama pull qwen2.5:7b            # any model that follows JSON instructions
+npm run explore -- --runs 5 --model qwen2.5:7b
+npm run explore:report -- evidence/explore/problem_user
+```
+
+It needs your machine (Ollama and the shop). It is not run in CI.
+
 ## The register check
 
 `04-scripts/check-register.mjs` fails when a check reports `FAIL (stable)` or `UNSTABLE` and no file in `05-findings/` names it, or when a check is `n/a` and no decision file (`D-`) names it. A finding that now passes is listed for a person to review, without failing the run. A finding is matched by its check id written in backticks, as in the existing files.

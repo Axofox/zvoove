@@ -1,0 +1,5 @@
+{
+  "id": "cart",
+  "mission": "Add several different products to the cart, remove some, and open the cart. Check that the cart counter, the Add and Remove buttons and the cart page always agree.",
+  "maxSteps": 14
+}

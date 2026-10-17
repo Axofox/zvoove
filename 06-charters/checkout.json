@@ -1,0 +1,5 @@
+{
+  "id": "checkout",
+  "mission": "Add one product, open the cart and start checkout. Try typical and unusual customer details. Check that every field keeps what is typed, that messages say what is wrong, and that the order can be completed.",
+  "maxSteps": 16
+}
