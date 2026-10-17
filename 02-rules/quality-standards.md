@@ -1,7 +1,7 @@
 # Quality Standards — E-commerce Checkout
 
 These rules define what "working correctly" means for an online shop checkout flow.
-The test-case generator and the QA judge use these standards: the generator to derive cases, the judge to check each case traces to a rule here. A human applies them when executing.
+The checks in `04-scripts/` are written from these standards, and the explorer is given them. The test-case generator uses them to derive cases. A human applies them when executing.
 
 ---
 

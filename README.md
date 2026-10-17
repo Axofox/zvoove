@@ -67,16 +67,16 @@ Every finding is written down once in `05-findings/`, with its evidence, a sugge
 | Folder | What's in it |
 |---|---|
 | `01-task/` | The goal, the environment, the 7-step scenario and how success is measured |
-| `02-rules/` | The quality standards and test types a person owns, plus the rules for the plan stage and `execution.md` (the agent observes, code decides) |
+| `02-rules/` | The quality standards and test types a person owns, plus the rules for the generator and `execution.md` (the agent observes, code decides) |
 | `03-results/` | Generated files from the plan stage (empty for now) |
-| `04-scripts/` | The observer, probes, explorer, checkers, the register check and the plan-stage tools |
+| `04-scripts/` | The observer, probes, explorer, checkers, the register check and the plan lint |
 | `05-findings/` | The findings register |
 | `06-charters/` | The explorer's missions and checklists |
 | `.github/` | The CI workflow and the two Copilot agent files (Copilot only looks there) |
 
-## Plan stage (experimental, not part of the proof)
+## Plan stage (optional)
 
-The **Test Case Generator** agent writes a manual test plan to `03-results/test-cases.md`, and the **QA Judge** (`npm run plan:check`, which runs `lint-cases.mjs` and `judge-ollama.mjs`) scores it against `02-rules/judge-rubric.md`. The checks in stages 2 and 3 are written directly from the standards, so the plan is not an input to them, and the judge is not on the critical path. A first real run with a local 7B model gave 11 to 12 out of 12 to every case, so it is not trustworthy yet. Keep it only if test-case generation from requirements stays in scope; the two improvements it needs are a known-bad plan it must reject, and a different seed on each repeated run.
+The **Test Case Generator** agent writes a manual test plan to `03-results/test-cases.md`, and `npm run lint:cases` checks its structure. The checks in stages 2 and 3 are written directly from the standards, so the plan is not an input to them. The AI judge that used to score the plan was removed on 2026-10-17: a local 7B model gave 11 to 12 out of 12 to every case, and the observe, probe and explore stages made it unnecessary for the proof. It is in git history (`.github/agents/qa-judge.agent.md`, `02-rules/judge-rubric.md`, `04-scripts/judge-ollama.mjs`).
 
 ## Ideas not built yet
 
