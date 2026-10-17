@@ -35,14 +35,9 @@ const schema = {
       required: ['type'],
     },
     observation: {
-      anyOf: [
-        { type: 'null' },
-        {
-          type: 'object',
-          properties: { category: { enum: categories }, summary: { type: 'string' }, quote: { type: 'string' } },
-          required: ['category', 'summary', 'quote'],
-        },
-      ],
+      type: 'object',
+      properties: { category: { enum: [...categories, 'none'] }, summary: { type: 'string' }, quote: { type: 'string' } },
+      required: ['category', 'summary', 'quote'],
     },
   },
   required: ['action', 'observation'],
@@ -58,7 +53,7 @@ const systemPrompt = `You are an exploratory tester of an online shop. You choos
 Rules:
 - Work only from the page you are shown. Never guess what is on other pages.
 - Pick exactly one action: click (an element id), fill (an element id and text), select (an element id and an option), back, or done.
-- Report at most one observation per step, only when something on the CURRENT page breaks one of the standards below. "observation" is null otherwise.
+- Report at most one observation per step, only when something on the CURRENT page breaks one of the standards below. "observation" uses the category "none" (with empty summary and quote) otherwise.
 - An observation needs a category from the list, a short summary, and a quote: text copied exactly from the page (a label, a message, a price, an image file name). If you cannot quote it, do not report it.
 - You do not decide whether the shop passes or fails. A person does.
 - Stop with "done" when your mission is covered or you are repeating yourself.
@@ -105,6 +100,7 @@ async function askModel(charter, step, history, reported, snap, stepSeed) {
   const user = `Mission: ${charter.mission}\nStep ${step} of at most ${charter.maxSteps}.\n\nRecent steps:\n${history.slice(-5).join('\n') || '(none yet)'}\n\nAlready reported (do not repeat):\n${reported.join('\n') || '(nothing)'}\n\n${describe(snap)}`;
   const response = await fetch(`${host}/api/chat`, {
     method: 'POST',
+    signal: AbortSignal.timeout(240000),
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       model,
@@ -150,16 +146,17 @@ async function session(browser, charter, run) {
   for (let step = 1; step <= charter.maxSteps; step += 1) {
     const snap = await snapshot(page);
     let reply;
+    console.log(`  ${charter.id} run ${run} step ${step}/${charter.maxSteps}: asking the model...`);
     try {
       reply = await askModel(charter, step, history, reported, snap, seed + run * 1000 + step);
     } catch (error) {
       log.invalidResponses += 1;
       log.steps.push({ step, url: snap.url, error: String(error.message).slice(0, 200) });
-      if (/Ollama answered|fetch failed/.test(error.message)) { log.stoppedBecause = `model unavailable: ${error.message}`; break; }
+      if (/Ollama answered|fetch failed|timeout|aborted/i.test(error.message)) { log.stoppedBecause = `model unavailable: ${error.message}`; break; }
       continue;
     }
     const entry = { step, url: snap.url, action: reply.action };
-    const obs = reply.observation;
+    const obs = reply.observation && reply.observation.category !== 'none' && reply.observation.quote ? reply.observation : null;
     if (obs) {
       const grounded = corpus(snap).includes(normalise(obs.quote)) && normalise(obs.quote).length >= 3;
       const key = `${obs.category}|${new URL(snap.url).pathname}|${normalise(obs.summary).slice(0, 60)}`;
