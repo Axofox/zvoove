@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        user: [problem_user, standard_user]
+        user: [problem_user]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

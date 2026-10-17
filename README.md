@@ -94,4 +94,4 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 
 `04-scripts/observe-tc001.mjs` is a plain Playwright script (no AI) that records TC-001 as JSON, so the checker has real input. It is the reference an AI observer must later match. Playwright is a pinned dev dependency for it. The agent files still do not need it.
 
-`.github/workflows/observe.yml` runs, on every pull request: the checker tests (`npm test`, fixed fixtures in `tests/`), 10 observed runs each of `problem_user` and `standard_user` against SauceDemo, then the checker. There is no answer key: each run reports what it found, and what repeats across runs is the result. Nothing in it calls a paid API.
+`.github/workflows/observe.yml` runs, on every pull request: 10 observed runs and 10 probe runs of `problem_user` against SauceDemo, then the checkers. There is no answer key: each run reports what it found, and what repeats across runs is the result. Nothing in it calls a paid API.

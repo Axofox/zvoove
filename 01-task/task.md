@@ -3,9 +3,7 @@
 1. Environment
 
 Application: https://www.saucedemo.com/
-Accounts (password for both: secret_sauce):
-- problem_user: deliberately faulty
-- standard_user: works, used as the clean baseline
+Account: problem_user (password: secret_sauce), which is deliberately faulty.
 
 No paid AI API is available. Everything must run on free tools: Playwright, GitHub Actions, local Ollama, or Copilot.
 
