@@ -95,9 +95,12 @@ const corpus = (snap) => normalise([snap.url, snap.text, ...snap.elements.flatMa
 const keyOf = (snap, el, text) => `${new URL(snap.url).pathname}|${el.tag}|${el.label}|${text ?? ''}`;
 
 function describe(snap, tried) {
-  const els = snap.elements.map((e) => `[${e.id}] ${tried.has(keyOf(snap, e, '')) ? '(already clicked) ' : ''}${e.tag}${e.type ? `:${e.type}` : ''} "${e.label}"${e.value !== undefined ? ` value="${e.value}"` : ''}${e.options ? ` options=${e.options.join('|')}` : ''}`).join('\n');
+  const done = (e) => ['a', 'button'].includes(e.tag) && tried.has(keyOf(snap, e, ''));
+  const open = snap.elements.filter((e) => !done(e)).slice(0, 18);
+  const els = open.map((e) => `[${e.id}] ${e.tag}${e.type ? `:${e.type}` : ''} "${e.label}"${e.value !== undefined ? ` value="${e.value}"` : ''}${e.options ? ` options=${e.options.join('|')}` : ''}`).join('\n');
+  const finished = snap.elements.filter(done).map((e) => `"${e.label}"`).join(', ');
   const imgs = snap.images.map((i) => `alt="${i.alt}" src="${i.src}"`).join('\n');
-  return `URL: ${snap.url}\n\nPage text:\n${snap.text}\n\nElements you can use:\n${els}\n\nImages:\n${imgs || '(none)'}`;
+  return `URL: ${snap.url}\n\nPage text:\n${snap.text}\n\nElements you can use (use ONLY these ids: ${open.map((e) => e.id).join(', ') || 'none, choose back or done'}):\n${els}\n\nAlready clicked on this page, not offered again: ${finished || 'nothing'}\n\nImages:\n${imgs || '(none)'}`;
 }
 
 async function askModel(charter, step, history, reported, snap, stepSeed, tried) {
@@ -166,7 +169,7 @@ async function session(browser, charter, run) {
     const obs = reply.observation && reply.observation.category !== 'none' && reply.observation.quote ? reply.observation : null;
     if (obs) {
       const grounded = corpus(snap).includes(normalise(obs.quote)) && normalise(obs.quote).length >= 3;
-      const key = `${obs.category}|${new URL(snap.url).pathname}|${normalise(obs.summary).slice(0, 60)}`;
+      const key = `${obs.category}|${new URL(snap.url).pathname}|${normalise(obs.quote)}`;
       if (!grounded) log.rejected.push({ step, reason: 'quote not on the page', ...obs });
       else if (!seen.has(key)) {
         seen.add(key);
@@ -188,10 +191,18 @@ async function session(browser, charter, run) {
       if (repeatsInARow >= 3) { log.stoppedBecause = 'stuck: three repeated actions in a row'; break; }
       continue;
     }
-    repeatsInARow = 0;
     if (actionKey) tried.add(actionKey);
     try {
       entry.result = await perform(page, reply.action);
+      if (entry.result === 'no such element id') {
+        log.repeats += 1;
+        repeatsInARow += 1;
+        if (repeatsInARow >= 3) {
+          log.steps.push(entry);
+          log.stoppedBecause = 'stuck: three unusable actions in a row';
+          break;
+        }
+      } else repeatsInARow = 0;
     } catch (error) {
       entry.result = `failed: ${String(error.message).split('\n')[0].slice(0, 120)}`;
     }
