@@ -30,10 +30,16 @@ jobs:
         run: npm run probe -- --user ${{ matrix.user }} --runs ${{ github.event.inputs.runs || 10 }} --out evidence/probes/${{ matrix.user }}
       - name: Check probes against the standards
         run: npm run check:probes -- evidence/probes/${{ matrix.user }} || true
+      - name: Check that every problem is in the findings register
+        id: register
+        shell: bash
+        run: npm run check:register | tee evidence/register-report.txt
       - name: Report findings
+        if: always()
         run: |
           echo "### ${{ matrix.user }}" >> "$GITHUB_STEP_SUMMARY"
           cat evidence/check-report.md evidence/probe-report.md >> "$GITHUB_STEP_SUMMARY"
+          { echo '### Findings register'; echo '```'; cat evidence/register-report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

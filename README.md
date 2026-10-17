@@ -91,6 +91,12 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 
     npm run probe -- --user problem_user --runs 3 && npm run check:probes -- evidence/probes/problem_user
 
+## The register check
+
+`04-scripts/check-register.mjs` fails when a check reports `FAIL (stable)` or `UNSTABLE` and no file in `05-findings/` names it, or when a check is `n/a` and no decision file (`D-`) names it. A finding that now passes is listed for a person to review, without failing the run. A finding is matched by its check id written in backticks, as in the existing files.
+
+    npm run check:register    # after check:observations and check:probes
+
 ## Playwright and CI
 
 `04-scripts/observe-tc001.mjs` is a plain Playwright script (no AI) that records TC-001 as JSON, so the checker has real input. It is the reference an AI observer must later match. Playwright is a pinned dev dependency for it. The agent files still do not need it.
