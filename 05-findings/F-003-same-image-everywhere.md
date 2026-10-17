@@ -3,7 +3,8 @@
 - **Status:** unconfirmed
 - **Account:** problem_user
 - **Seen:** every run. CI probes 10/10; a Mac run 3/3
-- **Suggested severity:** major (a person decides)
+- **Suggested severity:** major, because the shop works but customers cannot tell the products apart by picture
+- **Decided severity:** ______ (person)
 - **Task flow step:** outside the 7-step flow (product page standard)
 
 ## What was observed
@@ -20,5 +21,5 @@ It only proves the six images are the same file. It cannot tell whether a single
 
 ## Person's decision
 - Confirmed by: ______  Date: ______
-- Severity / priority: ______
+- Priority: ______
 - Notes: ______

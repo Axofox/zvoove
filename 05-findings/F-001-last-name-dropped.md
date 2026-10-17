@@ -3,7 +3,8 @@
 - **Status:** unconfirmed (nobody has repeated it by hand since 2026-10-15)
 - **Account:** problem_user
 - **Seen:** every run. CI observer 10/10 and probes 10/10 (workflow runs 5 to 8); a Mac run 3/3 for both
-- **Suggested severity:** blocker (a person decides)
+- **Suggested severity:** blocker, because step 5 of the task flow (enter valid customer information) cannot be completed, so the order can never be placed
+- **Decided severity:** ______ (person)
 - **Task flow step:** 5 and 6 (enter valid customer information, continue through checkout)
 
 ## What was observed
@@ -17,5 +18,5 @@ Observer JSON per run in the `observations-problem_user` artifact of each CI run
 
 ## Person's decision
 - Confirmed by: ______  Date: ______
-- Severity / priority: ______
+- Priority: ______
 - Notes: ______

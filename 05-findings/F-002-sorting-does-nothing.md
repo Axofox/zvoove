@@ -3,7 +3,8 @@
 - **Status:** unconfirmed
 - **Account:** problem_user
 - **Seen:** every run. CI probes 10/10; a Mac run 3/3
-- **Suggested severity:** major (a person decides)
+- **Suggested severity:** major, because the shop works but a control a customer relies on has no effect
+- **Decided severity:** ______ (person)
 - **Task flow step:** outside the 7-step flow (product page standard)
 
 ## What was observed
@@ -17,5 +18,5 @@ Selecting Name (Z to A), Price (low to high) and Price (high to low) all left th
 
 ## Person's decision
 - Confirmed by: ______  Date: ______
-- Severity / priority: ______
+- Priority: ______
 - Notes: ______
