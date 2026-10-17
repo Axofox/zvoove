@@ -1,4 +1,4 @@
-// Deterministic pre-checks for 03-results/test-cases.md. Free to run; the AI judge only reviews what these cannot decide.
+// Deterministic pre-checks for 03-results/test-cases.md. Free to run.
 import fs from 'node:fs';
 
 const file = process.argv[2] ?? '03-results/test-cases.md';
