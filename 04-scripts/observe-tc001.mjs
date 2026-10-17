@@ -81,14 +81,18 @@ async function observeOnce(browser) {
   }
 
   let shown = false;
+  let finalUrl = page.url();
+  let heading = '';
   if (summary) {
     await page.click('[data-test="finish"]');
     await page.waitForURL(/checkout-complete/).catch(() => {});
-    shown = page.url().includes('checkout-complete') && (await page.locator('[data-test="complete-header"], .complete-header').count()) > 0;
+    finalUrl = page.url();
+    heading = (await page.locator('h1, h2, [data-test="complete-header"]').allInnerTexts()).join(' | ');
+    shown = /thank you for your order/i.test(await page.locator('body').innerText());
   }
   const badgeAfter = await badgeCount(page);
   await context.close();
-  return { added: products, listingPrices, cartBadge, cart, form: { typed, retained }, summary, confirmation: { shown, badgeAfter } };
+  return { added: products, listingPrices, cartBadge, cart, form: { typed, retained }, summary, confirmation: { shown, badgeAfter }, diagnostics: { finalUrl, heading } };
 }
 
 fs.mkdirSync(out, { recursive: true });
@@ -96,6 +100,6 @@ const browser = await chromium.launch();
 for (let i = 1; i <= runs; i += 1) {
   const observation = await observeOnce(browser);
   fs.writeFileSync(path.join(out, `run-${String(i).padStart(2, '0')}.json`), `${JSON.stringify({ user, ...observation }, null, 2)}\n`);
-  console.log(`run ${i}/${runs} recorded`);
+  console.log(`run ${i}/${runs} recorded; confirmation shown: ${observation.confirmation.shown}; ${observation.diagnostics.finalUrl}; heading: ${observation.diagnostics.heading}`);
 }
 await browser.close();
