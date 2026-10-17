@@ -86,6 +86,8 @@ async function observeOnce(browser) {
   if (summary) {
     await page.click('[data-test="finish"]');
     await page.waitForURL(/checkout-complete/).catch(() => {});
+    // The shop is a single-page app: the address changes before the content is drawn.
+    await page.locator('[data-test="complete-header"], .complete-header').waitFor().catch(() => {});
     finalUrl = page.url();
     heading = (await page.locator('h1, h2, [data-test="complete-header"]').allInnerTexts()).join(' | ');
     shown = /thank you for your order/i.test(await page.locator('body').innerText());
