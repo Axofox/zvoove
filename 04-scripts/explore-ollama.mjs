@@ -179,6 +179,7 @@ async function session(browser, charter, run) {
     }
     if (!page.url().startsWith(origin)) { await page.goBack().catch(() => {}); entry.result = 'left the site, went back'; }
     log.steps.push(entry);
+    console.log(`  ${charter.id} run ${run} step ${step}/${charter.maxSteps}: ${reply.action.type}${reply.action.id !== undefined ? ` #${reply.action.id}` : ''} -> ${entry.result}${entry.observation ? `, observation ${entry.observation}` : ''}`);
     history.push(`step ${step}: ${reply.action.type}${reply.action.id !== undefined ? ` #${reply.action.id}` : ''}${reply.action.text ? ` "${reply.action.text.slice(0, 40)}"` : ''} -> ${entry.result}`);
   }
   log.codeDetected = [
