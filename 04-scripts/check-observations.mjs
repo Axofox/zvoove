@@ -72,4 +72,6 @@ const report = `# Check report\n\nRuns: ${runs.length} (${runs.map((r) => r.file
 console.log(report);
 fs.mkdirSync('evidence', { recursive: true });
 fs.writeFileSync('evidence/check-report.md', report);
+const verdicts = Object.fromEntries(ids.map((id, n) => [id, rows[n].split('|')[4].trim()]));
+fs.writeFileSync('evidence/check-report.json', `${JSON.stringify({ runs: runs.length, verdicts }, null, 2)}\n`);
 process.exit(rows.some((r) => !r.includes('| pass |')) ? 1 : 0);

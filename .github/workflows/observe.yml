@@ -1,0 +1,50 @@
+name: Observe and check
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: Observation runs per user
+        default: '10'
+
+jobs:
+  checker-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+
+  live:
+    needs: checker-tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        user: [problem_user, standard_user]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Observe TC-001
+        run: npm run observe -- --user ${{ matrix.user }} --runs ${{ github.event.inputs.runs || 10 }} --out evidence/observations/${{ matrix.user }}
+      - name: Check observations against the standards
+        run: npm run check:observations -- evidence/observations/${{ matrix.user }} || true
+      - name: Compare with the answer key
+        run: |
+          status=0
+          npm run --silent compare:expected -- evidence/check-report.json expected/${{ matrix.user }}.json > compare.txt || status=$?
+          { echo "### ${{ matrix.user }}"; cat evidence/check-report.md; cat compare.txt; } >> "$GITHUB_STEP_SUMMARY"
+          cat compare.txt
+          exit $status
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: observations-${{ matrix.user }}
+          path: evidence/

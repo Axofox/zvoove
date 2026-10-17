@@ -84,6 +84,8 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 
 **Known gaps today:** the browser-use runner is not built; the examples in `03-results/examples/observations/` are hand-written; the Ollama judge ran once for real, and was lenient and repetitive (see idea 2); most cases need the checkout form, which `problem_user` breaks, so one defect can hide the rest.
 
-## Why Playwright isn't in `package.json`
+## Playwright and CI
 
-The earlier run used Playwright, but it was removed; `evidence/` and `reports/` are gitignored, so only results on the author's machine remain. A Copilot agent runs in its own cloud environment (or through a browser tool it brings itself), so it can execute tests without the project depending on Playwright.
+`04-scripts/observe-tc001.mjs` is a plain Playwright script (no AI) that records TC-001 as JSON, so the checker has real input. It is the reference an AI observer must later match. Playwright is a pinned dev dependency for it. The agent files still do not need it.
+
+`.github/workflows/observe.yml` runs, on every pull request: the checker tests (`npm test`, fixed fixtures in `tests/`), then 10 observed runs each of `problem_user` and `standard_user` against SauceDemo, the checker, and a comparison with the answer key in `expected/`. Nothing in it calls a paid API.

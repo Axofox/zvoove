@@ -1,0 +1,15 @@
+{
+  "note": "Clean baseline: on a working account every check must pass. Not yet confirmed by a person.",
+  "minRuns": 10,
+  "verdicts": {
+    "cart-contents": "pass",
+    "badge-matches-cart": "pass",
+    "price-consistency": "pass",
+    "form-retains-input": "pass",
+    "summary-reached": "pass",
+    "item-total": "pass",
+    "grand-total": "pass",
+    "confirmation": "pass",
+    "cart-cleared": "pass"
+  }
+}
