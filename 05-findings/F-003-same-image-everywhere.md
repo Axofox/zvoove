@@ -10,6 +10,13 @@
 ## What was observed
 All six products use one image file, `/assets/sl-404-….jpg`, instead of their own pictures.
 
+## Steps to reproduce
+1. Log in as `problem_user` and look at the product list.
+2. Compare the pictures of the six products.
+
+**Expected:** each product shows its own picture.
+**Actual:** all six show the same placeholder image.
+
 ## Checks that report it
 `product-images-distinct`.
 

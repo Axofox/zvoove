@@ -11,11 +11,12 @@ A working example, on <https://www.saucedemo.com/> (user `problem_user`, which i
 | 1 | **Standards** | **Human** | Writes what "correct" means in `02-rules/`. The one place a person defines the truth | edit the files |
 | 2 | **Observe the flow** | Script (no AI) | Runs the 7-step flow from the task and records facts as JSON; `check-observations.mjs` applies the standards | `npm run observe`, `npm run check:observations` |
 | 3 | **Probe** | Script (no AI) | Runs the extra cases from `test-types.md` (sorting, images, cart, required fields, injection, refresh, small screen), each in its own browser | `npm run probe`, `npm run check:probes` |
-| 4 | **Explore** | Local AI (Ollama) | A model picks actions from a fixed menu and reports observations with a quote. Code rejects any quote that is not on the page | `npm run explore`, `npm run explore:report` |
-| 5 | **Register check** | Script | Fails when a problem the checks report is not written up in `05-findings/` | `npm run check:register` |
-| 6 | **Triage** | **Human** | Confirms each finding, sets severity and priority in `05-findings/`, decides the open questions | edit the files |
+| 4 | **Explore** | Local AI (Ollama) | Discovers what the fixed checks do not cover. A model picks actions from a fixed menu and reports observations with a quote; code rejects any quote that is not on the page | `npm run explore`, `npm run explore:report` |
+| 5 | **Triage** | **Human** | Stages 2 to 4 feed one findings register. A person confirms or rejects each finding, rates its severity and decides which are relevant. The register check fails the run when a problem is not written up | `npm run check:register`, edit `05-findings/` |
+| 6 | **Promote** | Human + AI | A confirmed explorer finding becomes a new probe, so a one-off discovery turns into a check that runs the same way every time | write the probe, add its check id to the finding |
+| 7 | **Test cases** | AI, then a person | Written last, from the happy flow and the `confirmed` or `fixed` findings: a manual test-case document, and the checks themselves as regression tests | Test Case Generator agent, `npm run lint:cases` |
 
-A person is pulled in by exceptions: a finding that needs confirming, an unstable result, an open decision. Nothing is called a bug until a person has confirmed it.
+A person is pulled in by exceptions: a finding to confirm, an unstable result, an open decision. Nothing is called a bug until a person has confirmed it. When a finding is marked `fixed`, its checks become a regression guard: if they fail again, CI goes red.
 
 ## What each stage proves, and what it does not
 
@@ -68,15 +69,17 @@ Every finding is written down once in `05-findings/`, with its evidence, a sugge
 |---|---|
 | `01-task/` | The goal, the environment, the 7-step scenario and how success is measured |
 | `02-rules/` | The quality standards and test types a person owns, plus the rules for the generator and `execution.md` (the agent observes, code decides) |
-| `03-results/` | Generated files from the plan stage (empty for now) |
-| `04-scripts/` | The observer, probes, explorer, checkers, the register check and the plan lint |
+| `03-results/` | Generated test cases (empty until findings are confirmed) |
+| `04-scripts/` | The observer, probes, explorer, checkers, the register check and the test-case lint |
 | `05-findings/` | The findings register |
 | `06-charters/` | The explorer's missions and checklists |
 | `.github/` | The CI workflow and the two Copilot agent files (Copilot only looks there) |
 
-## Plan stage (optional)
+## Test cases (the last stage)
 
-The **Test Case Generator** agent writes a manual test plan to `03-results/test-cases.md`, and `npm run lint:cases` checks its structure. The checks in stages 2 and 3 are written directly from the standards, so the plan is not an input to them.
+The **Test Case Generator** agent (`.github/agents/test-case-generator.agent.md`, rules in `02-rules/test-case-rules.md`) writes the manual test plan to `03-results/test-cases.md`: the happy flow first, then one case per `confirmed` or `fixed` finding, using the finding's "Steps to reproduce". `npm run lint:cases` checks the structure. Test types that no finding covers get no case, because their probes pass and keep guarding them.
+
+The checks in `04-scripts/` are the automated regression tests: a `fixed` finding must keep passing its checks (the register check enforces it), so there is no separate test code to write. The plan can take any other form later (for example Playwright specs) from the same list of confirmed findings.
 
 ## Ideas not built yet
 

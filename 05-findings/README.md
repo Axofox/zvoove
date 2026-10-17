@@ -25,6 +25,19 @@ Taken from the reporting list in `02-rules/test-types.md` (blocker / major / min
 
 The AI may *suggest* a severity and must give the reason in one line, quoting the meaning above. A person *decides*; the decided severity is the one that counts. Priority (what to fix first) is also the person's call and is not guessed here.
 
+## Status
+
+Each finding file starts with `- **Status:** <word>`. The register check reads that word:
+
+| Status | Meaning | What the register check does |
+|---|---|---|
+| `unconfirmed` | Reported by a check, no person has looked yet | Requires the entry to exist |
+| `confirmed` | A person reproduced it and it is a real bug | The check is expected to keep failing; if it passes, the finding is listed for review |
+| `fixed` | The shop was changed | The check must pass. If it fails again, the run goes **red** as a regression |
+| `rejected` | A person decided it is not a bug | If the check still fails, the run lists it so the check or the standard is changed |
+
+A `fixed` finding is the regression test: the probe or observer check named in the file keeps guarding it.
+
 ## Rules
 
 1. **One file per root cause**, not per failing check. Several checks can fail because of one bug (`F-001` explains four).

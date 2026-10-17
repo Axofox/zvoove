@@ -10,6 +10,15 @@
 ## What was observed
 Typed "Alex", "Tester", "12345" into first name, last name and postal code. The first-name field kept "Tester", the last-name field stayed empty, and Continue answered "Last Name is required". The summary and confirmation pages are never reached.
 
+## Steps to reproduce
+1. Open https://www.saucedemo.com/ and log in as `problem_user` (password `secret_sauce`).
+2. Add Sauce Labs Backpack and Sauce Labs Bike Light, open the cart and press Checkout.
+3. Type Alex in First Name, Tester in Last Name and 12345 in Postal Code.
+4. Look at the fields, then press Continue.
+
+**Expected:** each field keeps what was typed and the order summary opens.
+**Actual:** First Name shows "Tester", Last Name is empty, and the page answers "Last Name is required".
+
 ## Checks that report it
 `form-retains-input`, `summary-reached`, `confirmation` (observer), `required-fields-named` (probes: with the postal code missing, the message still says "Last Name is required", because the last name never gets filled).
 

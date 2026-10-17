@@ -10,6 +10,14 @@
 ## What was observed
 Selecting Name (Z to A), Price (low to high) and Price (high to low) all left the list in the default A to Z order. The prices after both price sorts were 29.99, 9.99, 15.99, 49.99, 7.99, 15.99, which is the default order. Name A to Z passes because it is the default.
 
+## Steps to reproduce
+1. Log in as `problem_user` and stay on the product list.
+2. Choose Name (Z to A) in the sort control and read the list.
+3. Choose Price (low to high), then Price (high to low), and read the prices each time.
+
+**Expected:** the list changes order each time.
+**Actual:** the list stays in the default A to Z order (prices 29.99, 9.99, 15.99, 49.99, 7.99, 15.99).
+
 ## Checks that report it
 `sort-za`, `sort-price-low-high`, `sort-price-high-low`.
 
