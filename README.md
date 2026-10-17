@@ -12,7 +12,7 @@ Folders are numbered in the order you meet them. Everything a person owns is in 
 |---|---|
 | `01-task/` | The assignment and the happy-flow scenario |
 | `02-rules/` | The quality standards, the test types, the generator's rules and format (`test-case-rules.md`), the judge rubric, and `execution.md` (the agent observes, code decides) |
-| `03-results/` | The 5 test cases, the judge report (`judge-report.md`, created by a run), `examples/` (a mock judge report and sample observations, both invented) and `history/` (archived runs, old paths inside) |
+| `03-results/` | Generated files only (test cases, judge report), written by a run. Cleared on 2026-10-17 for a fresh start |
 | `04-scripts/` | Lint, judge (Ollama), observation checker and report scripts |
 
 ## Workflow: two human jobs, two automatic stages
@@ -45,7 +45,7 @@ The script asks the model about one case at a time (temperature 0, fixed seed), 
 
 The AI never decides pass or fail. An agent (or a person) records what is on screen as JSON: badge count, prices, form values, totals. `04-scripts/check-observations.mjs` applies the quality standards to those facts and reports each check as `pass`, `FAIL (stable)` or `UNSTABLE` across repeated runs. Details, schema and status: [`02-rules/execution.md`](02-rules/execution.md).
 
-    npm run check:observations -- 03-results/examples/observations
+    npm run observe -- --user problem_user --runs 3 && npm run check:observations -- evidence/observations/problem_user
 
 ## Commands
 
@@ -82,10 +82,10 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 10. **Production feedback.** Turn each real incident into a permanent standard.
 11. **Cost and metrics.** Track tokens per run, how many cases the judge sends back, and how many findings humans accept.
 
-**Known gaps today:** the browser-use runner is not built; the examples in `03-results/examples/observations/` are hand-written; the Ollama judge ran once for real, and was lenient and repetitive (see idea 2); most cases need the checkout form, which `problem_user` breaks, so one defect can hide the rest.
+**Known gaps today:** the browser-use runner is not built; the Ollama judge ran once for real, and was lenient and repetitive (see idea 2); most cases need the checkout form, which `problem_user` breaks, so one defect can hide the rest.
 
 ## Playwright and CI
 
 `04-scripts/observe-tc001.mjs` is a plain Playwright script (no AI) that records TC-001 as JSON, so the checker has real input. It is the reference an AI observer must later match. Playwright is a pinned dev dependency for it. The agent files still do not need it.
 
-`.github/workflows/observe.yml` runs, on every pull request: the checker tests (`npm test`, fixed fixtures in `tests/`), then 10 observed runs each of `problem_user` and `standard_user` against SauceDemo, the checker, and a comparison with the answer key in `expected/`. Nothing in it calls a paid API.
+`.github/workflows/observe.yml` runs, on every pull request: the checker tests (`npm test`, fixed fixtures in `tests/`), 10 observed runs each of `problem_user` and `standard_user` against SauceDemo, then the checker. There is no answer key: each run reports what it found, and what repeats across runs is the result. Nothing in it calls a paid API.
