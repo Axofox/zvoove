@@ -26,10 +26,14 @@ jobs:
         run: npm run observe -- --user ${{ matrix.user }} --runs ${{ github.event.inputs.runs || 10 }} --out evidence/observations/${{ matrix.user }}
       - name: Check observations against the standards
         run: npm run check:observations -- evidence/observations/${{ matrix.user }} || true
+      - name: Probe the shop (cases from test-types.md)
+        run: npm run probe -- --user ${{ matrix.user }} --runs ${{ github.event.inputs.runs || 10 }} --out evidence/probes/${{ matrix.user }}
+      - name: Check probes against the standards
+        run: npm run check:probes -- evidence/probes/${{ matrix.user }} || true
       - name: Report findings
         run: |
           echo "### ${{ matrix.user }}" >> "$GITHUB_STEP_SUMMARY"
-          cat evidence/check-report.md >> "$GITHUB_STEP_SUMMARY"
+          cat evidence/check-report.md evidence/probe-report.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

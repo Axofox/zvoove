@@ -84,6 +84,12 @@ The AI never decides pass or fail. An agent (or a person) records what is on scr
 
 **Known gaps today:** the browser-use runner is not built; the Ollama judge ran once for real, and was lenient and repetitive (see idea 2); most cases need the checkout form, which `problem_user` breaks, so one defect can hide the rest.
 
+## Probing stage
+
+`04-scripts/probe-shop.mjs` runs the extra cases from `02-rules/test-types.md` (sorting, product images and descriptions, removing and emptying the cart, adding twice, required fields, script injection, 500+ characters, special characters, refresh mid-checkout, a 700px-high screen). Each probe starts in its own logged-in browser, so one defect cannot hide the others. It records facts only; `04-scripts/check-probes.mjs` decides and reports `pass`, `FAIL (stable)`, `UNSTABLE` or `n/a` (the shop has no such feature). A probe that errors is reported as a failure that says so, so a broken selector is not mistaken for a shop bug.
+
+    npm run probe -- --user problem_user --runs 3 && npm run check:probes -- evidence/probes/problem_user
+
 ## Playwright and CI
 
 `04-scripts/observe-tc001.mjs` is a plain Playwright script (no AI) that records TC-001 as JSON, so the checker has real input. It is the reference an AI observer must later match. Playwright is a pinned dev dependency for it. The agent files still do not need it.

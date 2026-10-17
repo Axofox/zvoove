@@ -8,7 +8,9 @@
     "judge:ollama": "node 04-scripts/judge-ollama.mjs",
     "check:observations": "node 04-scripts/check-observations.mjs",
     "plan:check": "node 04-scripts/lint-cases.mjs && node 04-scripts/judge-ollama.mjs",
-    "observe": "node 04-scripts/observe-tc001.mjs"
+    "observe": "node 04-scripts/observe-tc001.mjs",
+    "probe": "node 04-scripts/probe-shop.mjs",
+    "check:probes": "node 04-scripts/check-probes.mjs"
   },
   "devDependencies": {
     "playwright": "1.55.1"
