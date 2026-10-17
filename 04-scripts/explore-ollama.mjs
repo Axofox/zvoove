@@ -17,6 +17,8 @@ const host = arg('host', 'http://localhost:11434');
 const baseUrl = arg('base-url', 'https://www.saucedemo.com/');
 const temperature = Number(arg('temperature', '0.3'));
 const seed = Number(arg('seed', '1'));
+const contextSize = Number(arg('ctx', '4096'));
+const standardsChars = Number(arg('standards-chars', '3500'));
 const only = arg('charter', '');
 const out = arg('out', `evidence/explore/${user}`);
 const origin = new URL(baseUrl).origin;
@@ -61,7 +63,7 @@ Rules:
 Categories: ${categories.join(', ')}
 
 Standards the shop is held to:
-${standards.slice(0, 6000)}`;
+${standards.slice(0, standardsChars)}`;
 
 const normalise = (text) => String(text).toLowerCase().replace(/\s+/g, ' ').trim();
 
@@ -69,7 +71,7 @@ async function snapshot(page) {
   return page.evaluate(() => {
     document.querySelectorAll('[data-explorer-id]').forEach((el) => el.removeAttribute('data-explorer-id'));
     const shown = (el) => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
-    const elements = [...document.querySelectorAll('a[href], button, input:not([type=hidden]), select, textarea')].filter(shown).slice(0, 45);
+    const elements = [...document.querySelectorAll('a[href], button, input:not([type=hidden]), select, textarea')].filter(shown).slice(0, 30);
     const list = elements.map((el, id) => {
       el.setAttribute('data-explorer-id', String(id));
       const tag = el.tagName.toLowerCase();
@@ -84,7 +86,7 @@ async function snapshot(page) {
       return entry;
     });
     const images = [...document.querySelectorAll('img')].filter(shown).slice(0, 12).map((img) => ({ alt: img.alt, src: (img.getAttribute('src') || '').slice(0, 120) }));
-    return { url: location.href, text: document.body.innerText.slice(0, 1800), elements: list, images };
+    return { url: location.href, text: document.body.innerText.slice(0, 1200), elements: list, images };
   });
 }
 
@@ -106,7 +108,7 @@ async function askModel(charter, step, history, reported, snap, stepSeed) {
       model,
       stream: false,
       format: schema,
-      options: { temperature, seed: stepSeed, num_ctx: 8192 },
+      options: { temperature, seed: stepSeed, num_ctx: contextSize },
       messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: user }],
     }),
   });

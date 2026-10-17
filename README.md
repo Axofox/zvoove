@@ -107,7 +107,7 @@ npm run explore -- --runs 5 --model qwen2.5:7b
 npm run explore:report -- evidence/explore/problem_user
 ```
 
-It needs your machine (Ollama and the shop). It is not run in CI.
+On a machine without GPU acceleration the model is slow (`ollama ps` shows `100% CPU`). Use a smaller model (`--model qwen2.5:3b`) or less context (`--ctx 2048 --standards-chars 2000`). It is not run in CI.
 
 ## The register check
 
