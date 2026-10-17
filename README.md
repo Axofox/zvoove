@@ -13,6 +13,7 @@ Folders are numbered in the order you meet them. Everything a person owns is in 
 | `01-task/` | The goal (prove AI helps QA with a human in the loop), the environment, the happy-flow scenario and how success is measured |
 | `02-rules/` | The quality standards, the test types, the generator's rules and format (`test-case-rules.md`), the judge rubric, and `execution.md` (the agent observes, code decides) |
 | `03-results/` | Generated files only (test cases, judge report), written by a run. Cleared on 2026-10-17 for a fresh start |
+| `05-findings/` | The findings register: every finding and open decision, with evidence and the person's verdict |
 | `04-scripts/` | Lint, judge (Ollama), observation checker and report scripts |
 
 ## Workflow: two human jobs, two automatic stages
