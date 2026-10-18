@@ -17,7 +17,7 @@
 
 ## What the agent records (one JSON file per run)
 
-`added`, `listingPrices`, `cartBadge`, `cart[]` (name, price, qty), `form.typed` and `form.retained`, `summary` (itemTotal, tax, total, or `null` if never reached), `confirmation` (shown, badgeAfter). See `03-results/examples/observations/`.
+`added`, `listingPrices`, `cartBadge`, `cart[]` (name, price, qty), `form.typed` and `form.retained`, `summary` (itemTotal, tax, total, or `null` if never reached), `confirmation` (shown, badgeAfter). `04-scripts/observe-tc001.mjs` writes this format.
 
 **Instruction for the agent:** *Perform the steps. After each step write down exactly what is on screen. Do not say whether anything is correct, wrong or suspicious. If something is missing, record `null`.*
 
@@ -41,12 +41,12 @@ New standard, new check: add one line to `04-scripts/check-observations.mjs`.
 
 Put the 3 JSON files (or one file with a `"runs"` array) in one folder and run:
 
-    npm run check:observations -- 03-results/examples/observations
+    npm run check:observations -- evidence/observations/problem_user
 
 Each check is reported as `pass`, `FAIL (stable)` (failed in every run) or `UNSTABLE` (differs between runs). Only stable results are findings; unstable ones mean the agent or the page is not repeatable.
 
 ## Honest status
 
-- `03-results/examples/observations/` is **hand-written**, marked `"synthetic": true`, modelled on the earlier manual run of `problem_user` (last name lost, so no summary or confirmation). They are not real agent output.
+- `04-scripts/observe-tc001.mjs` is a plain Playwright script (no AI) that records real observations. An AI observer is not built yet.
 - The agent runner (browser-use with Ollama) is **not built yet**. The checker works without it, so a person can fill in the JSON by hand and get the same verdicts.
 - `problem_user` is a good first target: its bugs are fixed and repeatable, so a working setup should report the same stable failures every time.

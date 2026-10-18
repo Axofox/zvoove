@@ -1,0 +1,10 @@
+{
+  "id": "checkout",
+  "mission": "Add one product, open the cart and start checkout. Try typical and unusual customer details. Check that every field keeps what is typed, that messages say what is wrong, and that the order can be completed.",
+  "maxSteps": 16,
+  "checklist": [
+    "Fill first name, last name and postal code with ordinary values and check each field keeps what was typed",
+    "Press Continue with a field empty and check the message names what is missing",
+    "Continue with valid details and check the summary totals and the final confirmation"
+  ]
+}

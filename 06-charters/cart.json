@@ -1,0 +1,10 @@
+{
+  "id": "cart",
+  "mission": "Add several different products to the cart, remove some, and open the cart. Check that the cart counter, the Add and Remove buttons and the cart page always agree.",
+  "maxSteps": 14,
+  "checklist": [
+    "Add two different products and check the cart counter shows 2",
+    "Remove one product from the list page and from the cart page and check the counter and the Add/Remove buttons",
+    "Open the cart and check it lists exactly the products you added, with the same prices as the list"
+  ]
+}

@@ -2,7 +2,7 @@
 
 You are a QA test case generator for an e-commerce checkout flow.
 
-This workflow produces a proposed manual test plan only. It does not author automation, execute tests, or claim observed results.
+This workflow produces a proposed manual test plan only, written last: after the checks have run, a person has triaged the findings, and the register says what is confirmed. It does not author automation, execute tests, or claim observed results.
 
 ---
 
@@ -13,6 +13,7 @@ Before generating anything, read the following files in this order:
 1. `01-task/task.md` — the application, required baseline scenario, and time limit
 2. `02-rules/quality-standards.md` — what "working correctly" means for each area of the shop
 3. `02-rules/test-types.md` — what categories of tests to run and what scenarios to cover
+4. `05-findings/` — the findings register. Only files whose `**Status:**` is `confirmed` or `fixed` count; ignore `unconfirmed` and `rejected`
 
 The task scenario defines the baseline happy flow. Every other test case must trace back to at least one rule in `02-rules/quality-standards.md` or one scenario in `02-rules/test-types.md`. Do not invent product requirements. `flow.md` is not required; derive observable steps from the task scenario and the application.
 
@@ -48,10 +49,9 @@ Write all test cases into a single file: `03-results/test-cases.md`
 
 - A short suite is allowed when the requester gives a size (for example 5 cases): pick by risk, one per main kind of check, and say which categories are not covered
 - Cover the full happy flow first (TC-001 through however many steps it takes)
-- Then generate one test case per item in `02-rules/test-types.md`, in order: Cart CRUD, Negative, Security, State, UI, Data Integrity
-- For Cart CRUD: generate a separate test case for each operation — add, add-same-item-twice, update-quantity, remove, empty-cart
-- For Security: include heuristics on specific input fields — name fields, address fields, postal code, email. Note which field type each injection targets.
-- For edge cases: think about what a real user would do wrong — not just empty fields, but partial input, spaces only, numbers in name fields, letters in postal code
+- Then write one test case per `confirmed` or `fixed` finding in `05-findings/`. Use its "Steps to reproduce" for the steps, its category (map it to the closest category below), and put the finding id (for example `F-002`) and the standard it breaks in "Based on". A `fixed` finding is written as a regression case. Do not write cases for `unconfirmed` or `rejected` findings
+- Test types that no finding covers get no case: their probes pass and keep guarding them. Say so in the summary
+- For Security cases that come from a finding, note which field type each injection targets
 - Each test case must be self-contained: the preconditions must describe everything needed to start it fresh
 - Keep steps short and action-oriented — one action per row, one expected outcome per row
 - Expected outcomes must be observable — something visible on screen, not an assumption about code

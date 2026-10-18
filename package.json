@@ -5,8 +5,16 @@
   "scripts": {
     "report": "node 04-scripts/build-report.mjs",
     "lint:cases": "node 04-scripts/lint-cases.mjs",
-    "judge:ollama": "node 04-scripts/judge-ollama.mjs",
     "check:observations": "node 04-scripts/check-observations.mjs",
-    "plan:check": "node 04-scripts/lint-cases.mjs && node 04-scripts/judge-ollama.mjs"
+    "observe": "node 04-scripts/observe-tc001.mjs",
+    "probe": "node 04-scripts/probe-shop.mjs",
+    "check:probes": "node 04-scripts/check-probes.mjs",
+    "check:register": "node 04-scripts/check-register.mjs",
+    "explore": "node 04-scripts/explore-ollama.mjs",
+    "explore:report": "node 04-scripts/aggregate-explorations.mjs",
+    "report:flock": "node 04-scripts/build-flock.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.55.1"
   }
 }

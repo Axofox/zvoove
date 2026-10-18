@@ -1,15 +1,14 @@
-AI-Driven QA Assessment
+# Goal: prove that AI makes QA easier, with a human in the loop
 
 1. Environment
+
 Application: https://www.saucedemo.com/
-Credentials:
-Username: problem_user
-Password: secret_sauce
-You may use any tools, frameworks or AI models you prefer.
-If you want a completely free/local option, you can use:
-• Browser Use: https://github.com/browser-use/browser-use
-• Ollama: https://ollama.com/
+Account: problem_user (password: secret_sauce), which is deliberately faulty.
+
+No paid AI API is available. Everything must run on free tools: Playwright, GitHub Actions, local Ollama, or Copilot.
+
 2. Scenario
+
 A user should be able to:
 1. Log into the application.
 2. Add Sauce Labs Backpack and Sauce Labs Bike Light to the shopping
@@ -19,46 +18,32 @@ cart.
 5. Enter valid customer information.
 6. Continue through checkout.
 7. Complete the order successfully.
-3. Your task
-Build a small working AI-driven QA solution that tests the scenario above.
-We want to see AI participating meaningfully in the actual testing process, rather
-than only being used once to generate conventional automated test code.
-Your solution should be able to:
-• interact with the application automatically
-• execute the scenario
-• determine whether the expected behaviour was achieved
-• identify failed, unexpected or suspicious behaviour
-• provide useful information about what happened
-• produce a readable result
 
-The working solution is the primary outcome of the exercise and should be
-demonstrated live during the review.
-4. Preparing for the review
-During the review, we will ask you to walk us through:
-• what you built
-• how it works
-• what the AI is doing
-• what is automated and what still requires human involvement
-• what the solution discovered
-• what you would improve next
-• how you would evolve this approach toward significantly less repetitive
-manual QA work
-You are welcome to prepare a short presentation to support this walkthrough if you
-find that useful.
-The presentation is optional and does not need to be polished or extensive. Its
-purpose is simply to help you explain your approach, decisions, solution and further
-ideas.
-The working AI-driven QA solution remains the main focus.
+3. What we want to prove
+
+AI can reduce manual QA work, and the result can be trusted, because the AI is stabilised by rules, quality standards and checks:
+- Run the same test ten times and get the same result.
+- Show where a human is still needed, and what exactly that person decides.
+- Show how a human can verify what the AI delivers, so reliability can be built on it.
+
+Rules for the design:
+- The AI observes and proposes. Code decides pass or fail.
+- Quality standards are written by a person and checkable (see 02-rules/).
+- Nothing is called a bug until a person has confirmed it.
+- There is no list of expected bugs in advance. The number of bugs is an output of the runs, not an input.
+
+4. How we measure it
+
+For every stage, run it ten times and report:
+- Which findings appear in all ten runs, and which only in some. Compare by meaning, not by wording.
+- What the human had to decide: confirm a finding, correct a rule, approve a plan.
+- How many of the AI's findings the human rejected, and how many real problems it missed.
+- Every miss and false positive becomes a change to a rule or a check, and the next run shows the effect.
+
+The exploratory part is expected to vary. The goal there is a stable core of repeated findings plus a measured, explained tail, not identical output.
+
 5. Looking further ahead
-Be prepared to discuss how you think AI could be used more broadly across QA
-when information is coming from areas such as:
-• product requirements
-• development changes
-• support tickets
-• customer-reported defects
-• existing automated tests
-• production incidents
-We are interested both in what you can make work today and in how you think
-QA can evolve from here.
-Please time-box the exercise to approximately 2 hours.
-Have fun!
+
+Show how the same approach could take in: product requirements, development changes, support tickets, customer-reported defects, existing automated tests and production incidents.
+
+Each planning or reporting round should stay within about two hours of human time.
