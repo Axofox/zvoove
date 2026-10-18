@@ -11,7 +11,8 @@
     "check:probes": "node 04-scripts/check-probes.mjs",
     "check:register": "node 04-scripts/check-register.mjs",
     "explore": "node 04-scripts/explore-ollama.mjs",
-    "explore:report": "node 04-scripts/aggregate-explorations.mjs"
+    "explore:report": "node 04-scripts/aggregate-explorations.mjs",
+    "report:flock": "node 04-scripts/build-flock.mjs"
   },
   "devDependencies": {
     "playwright": "1.55.1"

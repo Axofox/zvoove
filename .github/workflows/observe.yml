@@ -34,6 +34,9 @@ jobs:
         id: register
         shell: bash
         run: npm run check:register | tee evidence/register-report.txt
+      - name: Draw the flock
+        if: always()
+        run: npm run report:flock
       - name: Report findings
         if: always()
         run: |

@@ -48,3 +48,11 @@ const report = `# Exploration report\n\nSessions: ${sessions.length}, model ${se
 console.log(report);
 fs.mkdirSync('evidence', { recursive: true });
 fs.writeFileSync('evidence/explore-report.md', report);
+const total = (fn) => (list) => list.reduce((a, x) => a + fn(x), 0);
+fs.writeFileSync('evidence/explore-report.json', `${JSON.stringify({
+  model: sessions[0].model,
+  ollamaVersion: sessions[0].ollamaVersion,
+  sessions: sessions.length,
+  groups: rows.map((r) => ({ key: r.key, seen: r.seen, total: r.total, cls: r.cls, summary: r.example.summary, quote: r.example.quote, known: r.known })),
+  metrics: [...byCharter.entries()].map(([charter, list]) => ({ charter, sessions: list.length, avgSteps: total((s) => s.steps.length)(list) / list.length, accepted: total((s) => s.observations.length)(list), rejected: total((s) => s.rejected.length)(list), invalid: total((s) => s.invalidResponses)(list), repeats: total((s) => s.repeats ?? 0)(list) })),
+}, null, 2)}\n`);

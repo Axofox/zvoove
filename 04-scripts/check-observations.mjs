@@ -73,5 +73,6 @@ console.log(report);
 fs.mkdirSync('evidence', { recursive: true });
 fs.writeFileSync('evidence/check-report.md', report);
 const verdicts = Object.fromEntries(ids.map((id, n) => [id, rows[n].split('|')[4].trim()]));
-fs.writeFileSync('evidence/check-report.json', `${JSON.stringify({ runs: runs.length, verdicts }, null, 2)}\n`);
+const details = Object.fromEntries(ids.map((id) => [id, { rule: checks.find(([i]) => i === id)[1], failing: runs.filter((r) => id in r.failed).length, total: runs.length, example: runs.find((r) => id in r.failed)?.failed[id] ?? '' }]));
+fs.writeFileSync('evidence/check-report.json', `${JSON.stringify({ runs: runs.length, verdicts, details }, null, 2)}\n`);
 process.exit(rows.some((r) => !r.includes('| pass |')) ? 1 : 0);

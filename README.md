@@ -55,6 +55,10 @@ npm run explore:report -- evidence/explore/problem_user
 
 Without GPU acceleration (`ollama ps` shows `100% CPU`) use a smaller model (`--model qwen2.5:3b`) or less context (`--ctx 2048 --standards-chars 2000`). It does not run in CI.
 
+### The flock
+
+`npm run report:flock` draws the results as a picture: one sheep per check in a pen per stage (the flow, the probes, the explorer). White sheep passed, black sheep failed, half-and-half wobbly ones gave different results between runs, sleeping ones belong to a feature the shop does not have. A tag shows the finding it belongs to and its status (`?` waiting, `✓` confirmed, `★` fixed, `×` rejected). The shepherd says how many findings are waiting for a person, the dog is the explorer, and pressing a sheep shows its evidence and the steps to reproduce. It writes `evidence/flock.html`, one self-contained page built from `evidence/` and `05-findings/`, and CI uploads it with the other evidence.
+
 ### The findings register
 
 Every finding is written down once in `05-findings/`, with its evidence, a suggested severity (blocker, major, minor, info) and the person's decision. How often it was seen and how bad it is are recorded separately. The register check matches a finding to a check by the check id in backticks; an explorer group is matched by the line `Explorer key: <key>`. Rules and severity scale: [`05-findings/README.md`](05-findings/README.md).

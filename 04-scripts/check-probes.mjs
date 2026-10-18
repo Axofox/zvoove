@@ -102,5 +102,5 @@ const report = `# Probe report\n\nRuns: ${runs.length}\n\n| Check | Standard | R
 console.log(report);
 fs.mkdirSync('evidence', { recursive: true });
 fs.writeFileSync('evidence/probe-report.md', report);
-fs.writeFileSync('evidence/probe-report.json', `${JSON.stringify({ runs: runs.length, verdicts: Object.fromEntries(rows.map((r) => [r.id, r.verdict])) }, null, 2)}\n`);
+fs.writeFileSync('evidence/probe-report.json', `${JSON.stringify({ runs: runs.length, verdicts: Object.fromEntries(rows.map((r) => [r.id, r.verdict])), details: Object.fromEntries(rows.map((r) => [r.id, { rule: r.rule, failing: r.failing, total: runs.length, example: r.detail }])) }, null, 2)}\n`);
 process.exit(rows.some((r) => r.verdict !== 'pass' && r.verdict !== 'n/a') ? 1 : 0);
